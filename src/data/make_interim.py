@@ -42,8 +42,10 @@ def main():
         list_tweet_ids = [name for name in os.listdir(event_folder_path) if os.path.isdir(os.path.join(event_folder_path,name))]
 
         for index, id in enumerate(list_tweet_ids):
+
             # thread conversation folder in raw
             source_tweet_folder_path =  os.path.join(event_folder_path, id)
+
             # read source tweet
             source_tweet_file = open(os.path.join(source_tweet_folder_path,'source-tweet', id + '.json'), 'r')
             source_tweet_content = source_tweet_file.read()
@@ -77,6 +79,7 @@ def main():
 
             # create tweet file in interim to write
             interim_tweet_file = open(os.path.join(interim_event_folder_path, str(index) + '.json'), "w")
+
             # write tweet to interim
             interim_tweet_file.write(json.dumps(source_tweet, indent = 4))
             interim_tweet_file.close()
