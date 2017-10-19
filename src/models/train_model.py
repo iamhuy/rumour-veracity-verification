@@ -1,5 +1,6 @@
 from settings import TRAINING_OPTIONS, MODELS_ROOT
 from sklearn.neighbors import KNeighborsClassifier
+import
 import pickle
 import logging
 import os
@@ -17,8 +18,8 @@ def svm(X, y):
 
 def main():
     # Read processed file
-    X = [1]
-    y = [1]
+    X = [[0,0,1],[1,1,0],[0,0,0]]
+    y = [0,1,2]
     # Get Features
 
 
