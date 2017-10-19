@@ -7,8 +7,9 @@ import sys
 import re
 from nltk.corpus import stopwords
 from nltk.tokenize import TweetTokenizer
+import nltk
 import string
-import numpy as np
+import itertools
 
 fix_dict = "/home/potus/rumour-veracity-verification/data/raw/semeval2017-task8-dataset/rumoureval-data/"
 
@@ -72,7 +73,7 @@ def tweet_clean(tweet):
     # print('No hashtags:')
     # print(list_no_hashtags)
     # Remove Punctuation and split 's, 't, 've with a space for filter
-    list_no_punctuation = [re.sub(r'[ ?![!?]' + string.punctuation + ' ]+', ' ', i) for i in list_no_hashtags]
+    list_no_punctuation = [re.sub(r'[' + string.punctuation + ']+', ' ', i) for i in list_no_hashtags]
     # print('No punctuation:')
     # print(list_no_punctuation)
     # Remove multiple whitespace
@@ -106,15 +107,28 @@ def create_corpus_for_story(current_story):
 
 def main():
     #current_story = sys.agrv[1]
+    #prepare the vector
+    tag_set=['ADJ', 'ADP', 'ADV', 'CONJ', 'DET', 'NOUN', 'NUM', 'PRT', 'PRON', 'VERB', '.', 'X']
+    bigram_tag=[]
+    for i in itertools.product(tag_set, tag_set):
+        bigram_tag.append(str(i))
+    #print (bigram_tag.index("('ADJ', 'ADJ')"))
+    #create corpus
     corpus = create_corpus_for_story("ebola-essien")
-    print ( corpus )
-    vectorizer = CountVectorizer()
-    # output_file = open(fix_dict + current_story + "/output.txt", 'w')
+    print ( corpus[:10] )
+    tagged_tokens=[]
+    for tweet in corpus:
+        token=nltk.word_tokenize(tweet)
+        tagged_token=nltk.pos_tag(token,tagset="universal")
+        tagged_tokens.append(tagged_token)
+        print (tagged_token)
+        #create the vector size of bigram_tag
+        pos_vector=[0]*len(bigram_tag)
+        for i in range(0, (len(tagged_token)-1)):
+            #print ( tagged_token[i][1]+","+tagged_token[i+1][1] )
+            pos_vector[( bigram_tag.index(str("('"+tagged_token[i][1]+"'"+", "+"'"+tagged_token[i+1][1]+"')")) )] = 1
 
-    vector = vectorizer.fit_transform(corpus).todense()
-    print ( vector )
-    # output_file.write(vector)
-    diction = vectorizer.vocabulary_
-    print (diction)
+        print (pos_vector)
+    #print ( tagged_tokens )
 if __name__== "__main__":
     main()
