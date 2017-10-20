@@ -10,3 +10,9 @@ VERACITY_LABEL_TEST_FILE = ['subtaskB.json']
 STANCE_LABEL_TEST_FILE = ['subtaskA.json']
 
 DATASET_OUT = 'make_dataset'
+VERACITY_LABELS = ["true", "false", "unverified"]
+VERACITY_LABELS_MAPPING = {
+    "true": 0,
+    "false": 1,
+    "unverified":2
+}

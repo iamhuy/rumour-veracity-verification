@@ -1,6 +1,5 @@
 from settings import TRAINING_OPTIONS, MODELS_ROOT
 from sklearn.neighbors import KNeighborsClassifier
-import
 import pickle
 import logging
 import os

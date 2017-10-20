@@ -165,5 +165,5 @@ if __name__ == '__main__':
     # load up the .env entries as environment variables
     load_dotenv(find_dotenv())
 
-    # prepare_train_data()
+    prepare_train_data()
     prepare_test_data()
