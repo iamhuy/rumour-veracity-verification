@@ -9,8 +9,8 @@
 • Mood:
 • Originality score:
 • isUserVerified(0-1): x
-• NumberOfFollowers:
-• Role score:.
+• NumberOfFollowers: x
+• Role score:
 • Engagement score:
 • Favourites score:
 • HasGeoEnabled(0-1):
