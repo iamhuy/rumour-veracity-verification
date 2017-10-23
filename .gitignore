@@ -73,3 +73,6 @@ target/
 /data/external/
 /data/interim/
 /data/processed/
+
+# exclude generated models
+/models/
