@@ -8,7 +8,7 @@
 • URL:
 • Mood:
 • Originality score:
-• isUserVerified(0-1):
+• isUserVerified(0-1): x
 • NumberOfFollowers:
 • Role score:.
 • Engagement score:

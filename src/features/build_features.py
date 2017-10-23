@@ -1,6 +1,7 @@
 from has_description import has_description
 from geo_enabled import geo_enabled
 from num_occurrences import num_occurrences
+from user_verified import user_verified
 
 
 def collect_feature(tweet):
@@ -17,6 +18,9 @@ def collect_feature(tweet):
 
     # Whether the user has enabled geo-location or not.
     feature_vector += geo_enabled(tweet['user'])
+
+    # Whether the user is verified or not
+    feature_vector += user_verified(tweet['user'])
 
     # Whether the tweet contain dot dot dot or not and number of dot dot dot
     dotdotdot_occurrences = num_occurrences(tweet['text'], r'\.\.\.')
