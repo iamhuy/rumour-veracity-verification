@@ -10,7 +10,7 @@
 • Originality score: x
 • isUserVerified(0-1): x
 • NumberOfFollowers: x
-• Role score:
+• Role score: x
 • Engagement score:
 • Favourites score:
 • HasGeoEnabled(0-1):

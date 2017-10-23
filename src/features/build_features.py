@@ -26,6 +26,9 @@ def collect_feature(tweet):
     # Number of statuses of user
     feature_vector += originality_score(tweet['user'])
 
+    # Role score
+    feature_vector += role_score(tweet['user'])
+
     # Whether the tweet contain dot dot dot or not and number of dot dot dot
     dotdotdot_occurrences = num_occurrences(tweet['text'], r'\.\.\.')
     feature_vector += [1 if dotdotdot_occurrences > 0 else 0, dotdotdot_occurrences]

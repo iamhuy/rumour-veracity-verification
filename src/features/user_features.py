@@ -52,3 +52,14 @@ def originality_score(user):
 
     return [user['statuses_count']]
 
+
+def role_score(user):
+    """
+        Ratio between the number of followers and followees
+    :param user: a json object representing a user
+    :return: a vector if size 1 [<Ratio between the number of followers and followees>]
+            if number of followees is 0, score is assigned with 1,000,000
+    """
+
+    return [user['followers_count'] / user['friends_count'] if user['friends_count'] > 0 else 1000000]
+
