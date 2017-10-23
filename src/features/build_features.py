@@ -1,5 +1,5 @@
 from num_occurrences import num_occurrences
-from user_features import user_verified, has_description, geo_enabled, num_followers
+from user_features import *
 
 
 def collect_feature(tweet):
@@ -22,6 +22,9 @@ def collect_feature(tweet):
 
     # Number of followers
     feature_vector += num_followers(tweet['user'])
+
+    # Number of statuses of user
+    feature_vector += originality_score(tweet['user'])
 
     # Whether the tweet contain dot dot dot or not and number of dot dot dot
     dotdotdot_occurrences = num_occurrences(tweet['text'], r'\.\.\.')

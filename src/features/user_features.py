@@ -2,7 +2,7 @@
 
 def user_verified(user):
     """
-    Check if a tweet user has been verified or not
+    Check if a twitter user has been verified or not
     :param user: a json object rerpresent user
     :return: binary vector of size-1 [<user is verified>]
     """
@@ -23,7 +23,7 @@ def geo_enabled(user):
 
 def has_description(user):
     """
-        Check if a user of a tweet has description or not
+        Check if a user of a twitter has description or not
     :param tweet: a json object representing a user
     :return: A vector of size 1 : [x]
             x = 0 if the user has profile description
@@ -35,9 +35,20 @@ def has_description(user):
 
 def num_followers(user):
     """
-        Number of followers that a tweet user follows
+        Number of followers that a twitter user follows
     :param user:  a json object representing a user
     :return: a vector of size 1 [<number of followers>]
     """
 
     return [user['followers_count']]
+
+
+def originality_score(user):
+    """
+        Number of statues that a twitter user has posted
+    :param user: a json object representing a user
+    :return: a vector if size 1 [<number of statuses count>]
+    """
+
+    return [user['statuses_count']]
+

@@ -7,7 +7,7 @@
 • Emoticon: x
 • URL:
 • Mood:
-• Originality score:
+• Originality score: x
 • isUserVerified(0-1): x
 • NumberOfFollowers: x
 • Role score:
