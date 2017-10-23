@@ -14,7 +14,9 @@ def num_occurrences(text, pattern):
     """
     Extract number of occurences of a pattern in text
     :param text: a string represet text
-    :param patern: a regex pattern
+    :param pattern: a regex pattern
     :return: Integer indicates number of occurrences
     """
     return len(re.findall(pattern, text))
+
+

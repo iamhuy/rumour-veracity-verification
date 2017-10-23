@@ -11,10 +11,10 @@
 • isUserVerified(0-1): x
 • NumberOfFollowers: x
 • Role score: x
-• Engagement score:
-• Favourites score:
-• HasGeoEnabled(0-1):
-• HasDescription(0-1):
+• Engagement score: x
+• Favourites score: x
+• HasGeoEnabled(0-1): x
+• HasDescription(0-1): x
 • LenghtOfDescription in words:
 • averageNegation:
 • hasNegation(0-1):

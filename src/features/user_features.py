@@ -1,3 +1,4 @@
+from utils import day_diff
 
 
 def user_verified(user):
@@ -61,5 +62,29 @@ def role_score(user):
             if number of followees is 0, score is assigned with 1,000,000
     """
 
-    return [user['followers_count'] / user['friends_count'] if user['friends_count'] > 0 else 1000000]
+    return [float(user['followers_count']) / float(user['friends_count']) if user['friends_count'] > 0 else 1000000]
 
+
+def engagement_score(tweet):
+    """
+        Ratio between the number of tweets and number of active days
+    :param user: a json object representing a tweet
+    :return: a vector if size 1 [<Ratio between the number of tweets and number of active days>]
+            if number of active days is 0, score is assigned with 1,000,000
+    """
+
+
+    active_days = day_diff(tweet['created_at'], tweet['user']['created_at'])
+    return [float(tweet['user']['statuses_count']) / float(active_days) if active_days > 0 else 1000000]
+
+
+def favorites_score(tweet):
+    """
+        Ratio between the number of favorites and number of active days
+    :param user: a json object representing a tweet
+    :return: a vector if size 1 [<Ratio between the number of favorites and number of active days>]
+            if number of active days is 0, score is assigned with 1,000,000
+    """
+
+    active_days = day_diff(tweet['created_at'], tweet['user']['created_at'])
+    return [float(tweet['user']['favourites_count']) / float(active_days) if active_days > 0 else 1000000]
