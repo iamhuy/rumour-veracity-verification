@@ -73,3 +73,5 @@ target/
 /data/external/
 /data/interim/
 /data/processed/
+
+/models/
