@@ -1,5 +1,7 @@
 from settings import TRAINING_OPTIONS, MODELS_ROOT
 from sklearn.neighbors import KNeighborsClassifier
+from utils import read_processed_data
+from sklearn.model_selection import LeaveOneGroupOut,  cross_val_score
 import pickle
 import logging
 import os
@@ -17,10 +19,7 @@ def svm(X, y):
 
 def main():
     # Read processed file
-    X = [[0,0,1],[1,1,0],[0,0,0]]
-    y = [0,1,2]
-    # Get Features
-
+    X, y, groups = read_processed_data()
 
     # Train
     for option in TRAINING_OPTIONS:
@@ -29,6 +28,8 @@ def main():
             pickle.dump(model, open(os.path.join(MODELS_ROOT, option + '.model'), "wb"))
         # if option == 'svm':
         # if option == 'j48':
+
+        print cross_val_score(model, X, y, groups = groups, cv = LeaveOneGroupOut())
 
 
 

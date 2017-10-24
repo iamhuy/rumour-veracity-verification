@@ -36,14 +36,18 @@ def prepare_processed_training_data():
         train_processed_file = open(os.path.join(processed_event_folder_path, 'train.txt'),"w")
         train_processed_label_file = open(os.path.join(processed_event_folder_path, 'train_label.txt'), "w")
 
-        for id in list_tweet_ids:
+        tweet_count = len(list_tweet_ids)
+
+        for index, id  in enumerate(list_tweet_ids):
             source_tweet = json_from_file(os.path.join(event_folder_path, id))
             features = collect_feature(source_tweet)
             features_str = "\t".join([str(i) for i in features])
             train_processed_file.write(features_str)
-            train_processed_file.write('\n')
+            if index != tweet_count-1 :
+                train_processed_file.write('\n')
             train_processed_label_file.write(str(VERACITY_LABELS_MAPPING[source_tweet['veracity']]))
-            train_processed_label_file.write('\n')
+            if index != tweet_count-1 :
+                train_processed_label_file.write('\n')
 
         train_processed_file.close()
         train_processed_label_file.close()
