@@ -19,7 +19,11 @@ def read_processed_data():
         labels = label_file.read().splitlines()
         for idx, label in enumerate(labels):
             y.append(int(label))
+<<<<<<< Updated upstream
             X.append(map(int,feature_vectors[idx].split('\t')))
+=======
+            X.append(map(float,feature_vectors[idx].split('\t')))
+>>>>>>> Stashed changes
             group.append(group_idx)
 
     return X,y, group
