@@ -72,7 +72,7 @@ def tweet_clean(tweet):
     # print('No hashtags:')
     # print(list_no_hashtags)
     # Remove Punctuation and split 's, 't, 've with a space for filter
-    list_no_punctuation = [re.sub(r'[ ?![!?]' + string.punctuation + ' ]+', ' ', i) for i in list_no_hashtags]
+    list_no_punctuation = [re.sub(r'[ ' + string.punctuation + ' ]+', ' ', i) for i in list_no_hashtags]
     # print('No punctuation:')
     # print(list_no_punctuation)
     # Remove multiple whitespace
@@ -103,10 +103,31 @@ def create_corpus_for_story(current_story):
             'ascii', 'ignore')
         corpus.append(tweet)
     return corpus
+def preprocess_corpus(corpus):
+    """
+    Preprocess tweets and return a new corpus for next task
+    :param corpus: a set of tweets
+    :return: new_corpus
+    """
+    new_corpus=[]
+    for tweet in corpus:
+        new_corpus.append(tweet_clean(tweet).encode('ascii', 'ignore'))
+    return new_corpus
+def get_bow_vectors(corpus):
+    """
+    Take a set of tweets, preprocess them (remove stopwords, hashtags, mentions, spelling) then return a bag of word vectors
+    :param corpus: non-preprocessed list of tweet belonging to a story
+    :return: bag of words vectors, each vector is the frequency of words in the dictionary implied from the corpus
+    """
+    new_corpus=preprocess_corpus(corpus)
 
+    vectorizer = CountVectorizer()
+
+    vectors = vectorizer.fit_transform(new_corpus).todense()
+    return vectors
 def main():
     #current_story = sys.agrv[1]
-    corpus = create_corpus_for_story("ebola-essien")
+    corpus = create_corpus_for_story("charliehebdo")
     print ( corpus )
     vectorizer = CountVectorizer()
     # output_file = open(fix_dict + current_story + "/output.txt", 'w')

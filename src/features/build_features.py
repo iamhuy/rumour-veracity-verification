@@ -1,5 +1,8 @@
 from num_occurrences import num_occurrences
 from user_features import *
+from pos_tag import get_bigram_postag_vector, get_trigram_postag_vector
+from sentiment_StanfordNLP import get_sentiment_value
+from src.data.constants import STANCE_LABELS_MAPPING
 
 
 def collect_feature(tweet):
@@ -49,5 +52,9 @@ def collect_feature(tweet):
     question_mark_occurrences = num_occurrences(tweet['text'], r'\?')
     feature_vector += [1 if question_mark_occurrences > 0 else 0, question_mark_occurrences]
 
+    feature_vector += get_bigram_postag_vector(tweet['text'])
+    feature_vector += get_trigram_postag_vector(tweet['text'])
+    feature_vector += get_sentiment_value(tweet['text'])
+    feature_vector += [STANCE_LABELS_MAPPING[tweet['stance']]]
 
     return feature_vector

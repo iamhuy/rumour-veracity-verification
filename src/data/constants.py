@@ -17,3 +17,11 @@ VERACITY_LABELS_MAPPING = {
     "false": 1,
     "unverified":2
 }
+
+STANCE_LABELS = ["comment", "deny", "support", "question"]
+STANCE_LABELS_MAPPING = {
+    "comment":0,
+    "deny": 1,
+    "support": 2,
+    "question": 3
+}
