@@ -1,5 +1,5 @@
 • BOW:x
-• Brown Cluster:
+• Brown Cluster: x
 • POS tag: x
 • Sentiment: x
 • NE:

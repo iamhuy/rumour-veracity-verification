@@ -54,3 +54,9 @@ Project Organization
 --------
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+
+List of external sources:
+http://www.cs.cmu.edu/~ark/TweetNLP/clusters/50mpaths2
+
+List of src/lib
+https://github.com/myleott/ark-twokenize-py
