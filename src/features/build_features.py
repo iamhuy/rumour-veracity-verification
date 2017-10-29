@@ -52,7 +52,11 @@ def collect_feature(tweet):
     feature_vector += [1 if question_mark_occurrences > 0 else 0, question_mark_occurrences]
 
     # Brown clusters
-    feature_vector += brown_cluster(tweet['text'])
+    brown_cluster_vector, has_url = brown_cluster(tweet['text'])
+    feature_vector += brown_cluster_vector
+
+    # Contain URL feature
+    feature_vector += [1 if has_url else 0]
 
     feature_vector += get_bigram_postag_vector(tweet['text'])
     feature_vector += get_trigram_postag_vector(tweet['text'])

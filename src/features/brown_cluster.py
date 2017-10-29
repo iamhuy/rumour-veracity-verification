@@ -5,11 +5,12 @@ import re
 
 def brown_cluster(tweet_text):
     """
-        Get a distribution of brown cluster of a tweet
+        Get a distribution of brown cluster of a tweet and check if it contains URL or not
     :param tweet_text: Tweet content as a string
     :return: A vector of size-1000, each element 1 represents an existence of a cluster in tweet, 0 otherwise
     """
 
+    has_url = False
     list_token = twokenize.tokenizeRawTweetText(tweet_text.lower())
     clusters = [0 for _ in range(1000)]
     for token in list_token:
@@ -18,6 +19,7 @@ def brown_cluster(tweet_text):
         matchObj = url_regex.match(token)
         matchGroups = url2_regex.match(token)
         if matchObj != None and matchGroups != None:
+            has_url = True
             word = "<URL-{0}>".format(matchGroups.group(3))
 
         # match mention
@@ -28,4 +30,4 @@ def brown_cluster(tweet_text):
         if brown_cluster_dict.has_key(word):
             clusters[brown_cluster_dict[word]] = 1
 
-    return clusters
+    return clusters, has_url
