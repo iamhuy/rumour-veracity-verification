@@ -38,6 +38,9 @@ def collect_feature(tweet):
     # Favourites score
     feature_vector += favorites_score(tweet)
 
+    # Is a reply or not
+    feature_vector += [1 if tweet['in_reply_to_status_id'] != None else 0]
+
     # Whether the tweet contain dot dot dot or not and number of dot dot dot
     dotdotdot_occurrences = num_occurrences(tweet['text'], r'\.\.\.')
     feature_vector += [1 if dotdotdot_occurrences > 0 else 0, dotdotdot_occurrences]
