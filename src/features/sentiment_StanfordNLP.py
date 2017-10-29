@@ -43,7 +43,7 @@ def remove_stopwords(tweet):
 def preprocess_tweet(tweet):
     cleaned_tweet = tweet.lower()  # lowercase the tweet
     p.set_options(p.OPT.URL, p.OPT.EMOJI, p.OPT.MENTION, p.OPT.HASHTAG)  # set options for the preprocessor
-    cleaned_tweet = p.clean(cleaned_tweet)
+    cleaned_tweet = p.clean(cleaned_tweet.encode("ascii", "ignore"))
     #cleaned_tweet = remove_stopwords(cleaned_tweet)  # remove stopwords
     #print cleaned_tweet
     return cleaned_tweet;
@@ -51,7 +51,7 @@ def preprocess_tweet(tweet):
 
 # def tweet_clean(tweet):
 #     cache_english_stopwords = set(stopwords.words('english'))
-#     # Remove tickers
+#     # Remove tickers 1
 #     sent_no_tickers = re.sub(r'\$\w*', '', tweet.lower())
 #     # print('No tickers:')
 #     # print(sent_no_tickers)
@@ -117,7 +117,7 @@ def get_sentiment_value(tweet):
                        'timeout': 10000,
                    })
     sentiment=int(res["sentences"][0]["sentimentValue"])
-    return sentiment
+    return [sentiment]
 # def create_corpus_for_story(current_story):
 #     corpus = []
 #     sub_direc = get_immediate_subdirectories(fix_dict+current_story+"/")

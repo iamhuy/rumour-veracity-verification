@@ -1,5 +1,8 @@
-from has_description import has_description
-from geo_enabled import geo_enabled
+from num_occurrences import num_occurrences
+from user_features import *
+from pos_tag import get_bigram_postag_vector, get_trigram_postag_vector
+from sentiment_StanfordNLP import get_sentiment_value
+from src.data.constants import STANCE_LABELS_MAPPING
 
 
 def collect_feature(tweet):
@@ -16,5 +19,42 @@ def collect_feature(tweet):
 
     # Whether the user has enabled geo-location or not.
     feature_vector += geo_enabled(tweet['user'])
+
+    # Whether the user is verified or not
+    feature_vector += user_verified(tweet['user'])
+
+    # Number of followers
+    feature_vector += num_followers(tweet['user'])
+
+    # Number of statuses of user
+    feature_vector += originality_score(tweet['user'])
+
+    # Role score
+    feature_vector += role_score(tweet['user'])
+
+    # Engagement score
+    feature_vector += engagement_score(tweet)
+
+    # Favourites score
+    feature_vector += favorites_score(tweet)
+
+    # Whether the tweet contain dot dot dot or not and number of dot dot dot
+    dotdotdot_occurrences = num_occurrences(tweet['text'], r'\.\.\.')
+    feature_vector += [1 if dotdotdot_occurrences > 0 else 0, dotdotdot_occurrences]
+
+    # Whether the tweet contain exclamation mark or not and number of exclamation marks
+    exclamation_mark_occurrences = num_occurrences(tweet['text'], r'!')
+    if exclamation_mark_occurrences == 1:
+        print tweet['text']
+    feature_vector += [1 if exclamation_mark_occurrences > 0 else 0, exclamation_mark_occurrences]
+
+    # Whether the tweet contain question mark or not and number of question marks
+    question_mark_occurrences = num_occurrences(tweet['text'], r'\?')
+    feature_vector += [1 if question_mark_occurrences > 0 else 0, question_mark_occurrences]
+
+    feature_vector += get_bigram_postag_vector(tweet['text'])
+    feature_vector += get_trigram_postag_vector(tweet['text'])
+    feature_vector += get_sentiment_value(tweet['text'])
+    feature_vector += [STANCE_LABELS_MAPPING[tweet['stance']]]
 
     return feature_vector

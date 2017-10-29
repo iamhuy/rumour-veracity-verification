@@ -45,7 +45,7 @@ import itertools
 def preprocess_tweet(tweet):
     cleaned_tweet = tweet.lower()  # lowercase the tweet
     p.set_options(p.OPT.URL, p.OPT.EMOJI, p.OPT.MENTION, p.OPT.HASHTAG)  # set options for the preprocessor
-    cleaned_tweet = p.clean(cleaned_tweet)
+    cleaned_tweet = p.clean(cleaned_tweet.encode("ascii", "ignore"))
     #cleaned_tweet = remove_stopwords(cleaned_tweet)  # remove stopwords
     return cleaned_tweet;
 
@@ -144,7 +144,6 @@ def get_trigram_postag_vector(tweet):
     #tokenize tweet
     token = nltk.word_tokenize(tweet)
     tagged_token = nltk.pos_tag(token, tagset="universal")
-    print tagged_token
     #print(tagged_token)
     #create the vector size of bigram_tag
     pos_vector = [0] * len(trigram_tag)

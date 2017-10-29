@@ -1,20 +1,20 @@
-• BOW:
+• BOW:x
 • Brown Cluster:
-• POS tag:
-• Sentiment
+• POS tag: x
+• Sentiment: x
 • NE:
-• Reply
-• Emoticon:
+• Reply:
+• Emoticon: x
 • URL:
 • Mood:
-• Originality score:
-• isUserVerified(0-1):
-• NumberOfFollowers:
-• Role score:.
-• Engagement score:
-• Favourites score:
-• HasGeoEnabled(0-1):
-• HasDescription(0-1):
+• Originality score: x
+• isUserVerified(0-1): x
+• NumberOfFollowers: x
+• Role score: x
+• Engagement score: x
+• Favourites score: x
+• HasGeoEnabled(0-1): x
+• HasDescription(0-1): x
 • LenghtOfDescription in words:
 • averageNegation:
 • hasNegation(0-1):
@@ -25,10 +25,10 @@
 • surpriseScore:
 • doubtScore:
 • noDoubtScore:
-• hasQuestionMark(0-1):
-• hasExclamationMark(0-1):
-• hasDotDotDot(0-1):
-• numberOfQuestionMark:
-• NumberOfExclamationMark:
-• numberOfDotDotDot:
+• hasQuestionMark(0-1): x
+• hasExclamationMark(0-1): x
+• hasDotDotDot(0-1): x
+• numberOfQuestionMark: x
+• NumberOfExclamationMark: x
+• numberOfDotDotDot: x
 • Binary regular expressions applied on each tweet:
