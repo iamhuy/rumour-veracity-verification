@@ -31,10 +31,12 @@ def main():
                 lda.fit(X, y)
                 X_r2 = lda.transform(X)
                 model = instance_based(k)
+                model.fit(X_r2, y)
+                model2 = instance_based(k)
                 print len(X[0])
                 pickle.dump(lda, open(os.path.join(MODELS_ROOT, option + '-lda'+ '.model'), "wb"))
                 pickle.dump(model, open(os.path.join(MODELS_ROOT, option + '.model'), "wb"))
-                print k, cross_val_score(model, X_r2, y, groups = groups, cv = LeaveOneGroupOut()).mean()
+                print k, cross_val_score(model2, X_r2, y, groups, cv = LeaveOneGroupOut()).mean()
 
 
 

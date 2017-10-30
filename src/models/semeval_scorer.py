@@ -2,48 +2,31 @@ import json
 import math
 import os.path
 import sys
+from src.data.constants import VERACITY_LABELS
 
-[_, reference_file, submission_file] = sys.argv
 
-truth_values = json.load(open(reference_file, 'r'))
-submission = json.load(open(submission_file, 'r'))
+def sem_eval_score(actuals, golds):
 
-observed = 0
-correct = 0
-total = len(truth_values.keys())
-errors = []
+    correct = 0
+    total = len(golds)
+    errors = []
 
-print(len(truth_values), 'entries in reference file')
+    for idx, (actual_value, confidence) in enumerate(actuals):
+        gold_value = golds[idx]
 
-for reference_id in truth_values.keys():
-    if reference_id in submission.keys():
-        print('matching entry:', reference_id)
-        observed += 1
-        try:
-            yhat, confidence = submission[reference_id]
-        except ValueError:
-            print('   Each entry should be a list of two values - [veracity, confidence]')
-            print('   veracity is one of "true" or "false"; confidence is a float from 0..1.')
-            print('   This entry was:', submission[reference_id], ',  for document key', reference_id)
-            sys.exit('-- error: data format: stopping')
-
-        if yhat == truth_values[reference_id]:
+        if actual_value == gold_value:
             correct += 1
             errors.append((1 - confidence) ** 2)
 
-        elif truth_values[reference_id] == 'unverified':
+        elif VERACITY_LABELS[actual_value] == 'unverified':
             errors.append((confidence) ** 2)
 
         else:
             errors.append(1.0)
-    else:
-        print('unmatched entry:', reference_id, '-- no reference value for this document')
 
-score = correct / total
-rmse = math.sqrt(sum(errors) / len(errors))
 
-print(observed, 'matched entries in submission')
-print(total, 'entries in reference file')
+    score = float(correct) / float(total)
+    rmse = math.sqrt(sum(errors) / len(errors))
 
-print('veracity accuracy:', score)
-print('confidence rmse:  ', rmse)
+    print('veracity accuracy:', score)
+    print('confidence rmse:  ', rmse)
