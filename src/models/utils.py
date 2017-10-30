@@ -1,7 +1,7 @@
-from src.data.constants import DATASET_EVENTS, DATASET_NAME
+from src.data.constants import DATASET_EVENTS, DATASET_NAME, TESTSET_NAME
 from settings import *
 
-def read_processed_data():
+def read_training_processed_data():
     """
     Read vectors of features and labels from processed/ folder
     :return: Vector X,y, group corresponding feature vector, label vector and group vector
@@ -23,5 +23,26 @@ def read_processed_data():
             group.append(group_idx)
 
     return X,y, group
+
+
+def read_testing_processed_data():
+    """
+    Read vectors of features and labels from processed/ folder
+    :return: Vector X,y, group corresponding feature vector, label vector
+    """
+    X = []
+    y = []
+
+    processed_folder_path = os.path.join(DATA_PROCESSED_ROOT, TESTSET_NAME)
+
+    train_file = open(os.path.join(processed_folder_path, "test.txt"),"r")
+    feature_vectors = train_file.read().splitlines()
+    label_file = open(os.path.join(processed_folder_path, "test_label.txt"),"r")
+    labels = label_file.read().splitlines()
+    for idx, label in enumerate(labels):
+        y.append(int(label))
+        X.append(map(float,feature_vectors[idx].split('\t')))
+
+    return X, y
 
 

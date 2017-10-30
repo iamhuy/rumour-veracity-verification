@@ -2,7 +2,7 @@ from settings import TRAINING_OPTIONS, MODELS_ROOT
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
-from utils import read_processed_data
+from utils import read_training_processed_data
 from sklearn.model_selection import LeaveOneGroupOut,  cross_val_score, cross_validate
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 import pickle
@@ -21,7 +21,7 @@ def svm(X, y):
 
 def main():
     # Read processed file
-    X, y, groups = read_processed_data()
+    X, y, groups = read_training_processed_data()
 
     # Train
     for option in TRAINING_OPTIONS[0:1]:
