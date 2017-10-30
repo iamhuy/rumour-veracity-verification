@@ -7,7 +7,6 @@ from emoticon import get_emoticons_vectors
 from brown_cluster import brown_cluster
 
 
-
 def collect_feature(tweet):
     """
         Collect a set of featrues from a tweet
@@ -75,6 +74,5 @@ def collect_feature(tweet):
 
     # Emoticon feature
     feature_vector += get_emoticons_vectors(tweet['text'])
-
 
     return feature_vector
