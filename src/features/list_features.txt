@@ -1,11 +1,11 @@
 • BOW:x
-• Brown Cluster:
+• Brown Cluster: x
 • POS tag: x
 • Sentiment: x
 • NE:
 • Reply: x
 • Emoticon: x
-• URL:
+• URL: x
 • Mood:
 • Originality score: x
 • isUserVerified(0-1): x

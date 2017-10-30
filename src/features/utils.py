@@ -21,3 +21,26 @@ def day_diff(timestamp1, timestamp2):
 
     return (timestamp_to_date(timestamp1) - timestamp_to_date(timestamp2)).days
 
+
+def read_brown_cluster_file(brown_cluster_text_file):
+    """
+        Read brown cluster text file and save into a dict
+    :param brown_cluster_text_file: brown cluster text file
+    :return: A dict, which keys are tokens and values are cluster ids
+    """
+
+    brown_cluster_dict = dict()
+    cluster_id_dict = dict()
+    cluster_count = 0
+
+    for line in brown_cluster_text_file.read().splitlines():
+        arr = line.split('\t')
+        cluster_str = arr[0]
+        token = arr[1]
+        if not cluster_id_dict.has_key(cluster_str):
+            cluster_id_dict[cluster_str] = cluster_count
+            cluster_count+=1
+        brown_cluster_dict[token] = cluster_id_dict[cluster_str]
+
+
+    return brown_cluster_dict

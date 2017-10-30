@@ -4,6 +4,8 @@ from pos_tag import get_bigram_postag_vector, get_trigram_postag_vector
 from sentiment_StanfordNLP import get_sentiment_value
 from src.data.constants import STANCE_LABELS_MAPPING
 from emoticon import get_emoticons_vectors
+from brown_cluster import brown_cluster
+
 
 
 def collect_feature(tweet):
@@ -53,6 +55,13 @@ def collect_feature(tweet):
     # Whether the tweet contain question mark or not and number of question marks
     question_mark_occurrences = num_occurrences(tweet['text'], r'\?')
     feature_vector += [1 if question_mark_occurrences > 0 else 0, question_mark_occurrences]
+
+    # Brown clusters
+    brown_cluster_vector, has_url = brown_cluster(tweet['text'])
+    feature_vector += brown_cluster_vector
+
+    # Contain URL feature
+    feature_vector += [1 if has_url else 0]
 
     # Postag features
     feature_vector += get_bigram_postag_vector(tweet['text'])
