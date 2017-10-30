@@ -3,7 +3,7 @@
 • POS tag: x
 • Sentiment: x
 • NE:
-• Reply:
+• Reply: x
 • Emoticon: x
 • URL:
 • Mood:
