@@ -3,6 +3,7 @@ from user_features import *
 from pos_tag import get_bigram_postag_vector, get_trigram_postag_vector
 from sentiment_StanfordNLP import get_sentiment_value
 from src.data.constants import STANCE_LABELS_MAPPING
+from emoticon import get_emoticons_vectors
 
 
 def collect_feature(tweet):
@@ -44,17 +45,24 @@ def collect_feature(tweet):
 
     # Whether the tweet contain exclamation mark or not and number of exclamation marks
     exclamation_mark_occurrences = num_occurrences(tweet['text'], r'!')
-    if exclamation_mark_occurrences == 1:
-        print tweet['text']
     feature_vector += [1 if exclamation_mark_occurrences > 0 else 0, exclamation_mark_occurrences]
 
     # Whether the tweet contain question mark or not and number of question marks
     question_mark_occurrences = num_occurrences(tweet['text'], r'\?')
     feature_vector += [1 if question_mark_occurrences > 0 else 0, question_mark_occurrences]
 
+    # Postag features
     feature_vector += get_bigram_postag_vector(tweet['text'])
     feature_vector += get_trigram_postag_vector(tweet['text'])
+
+    # Sentiment features
     feature_vector += get_sentiment_value(tweet['text'])
+
+    # Stance features
     feature_vector += [STANCE_LABELS_MAPPING[tweet['stance']]]
+
+    # Emoticon feature
+    feature_vector += get_emoticons_vectors(tweet['text'])
+
 
     return feature_vector
