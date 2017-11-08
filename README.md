@@ -7,4 +7,11 @@ An implementation for module Rumour Veracity Verification of PHEME proeject
 
 **Nguyen Minh Gia Huy** - Ho Chi Minh City University of Techonology
 
-**Le Tuan Tai** - Ho Chi Minh City University of Techonology
+--------
+
+List of external sources:
+http://www.cs.cmu.edu/~ark/TweetNLP/clusters/50mpaths2
+
+List of src/lib
+https://github.com/myleott/ark-twokenize-py
+
