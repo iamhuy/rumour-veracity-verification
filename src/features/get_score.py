@@ -8,6 +8,8 @@ import preprocessor as p
 from nltk.corpus import stopwords
 from nltk.tokenize import TweetTokenizer
 from scipy.spatial.distance import cosine
+
+
 def remove_stopwords_and_tokenize(tweet):
     stop_words = set(stopwords.words('english'))
     tweet = tweet.lower()
@@ -19,6 +21,7 @@ def remove_stopwords_and_tokenize(tweet):
         if not token in stop_words:
             no_stop_words.append(token)
             # remove words less than 2 letters
+            
     no_stop_words = [re.sub(r'^\w\w?$', '', i) for i in no_stop_words]
     return no_stop_words
 
@@ -29,6 +32,8 @@ def preprocess_and_tokenize_tweet(tweet):
     cleaned_tweet = p.clean(cleaned_tweet.encode('ascii', 'ignore'))
     cleaned_tweet = remove_stopwords_and_tokenize(cleaned_tweet)  # remove stopwords
     return cleaned_tweet;
+
+
 def get_wordList(feedingWord):
     app_id = '93a6b0a3'
     app_key = 'a8bab0b9458264690625fdd834421d10'
@@ -49,6 +54,7 @@ def get_wordList(feedingWord):
             wordList.append(syn["text"])
     return wordList
 
+
 def cummulative_vector_wordList(wordList):
         logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
         numOfWord = len(wordList)
@@ -68,6 +74,7 @@ def cummulative_vector_wordList(wordList):
             #print numOfWord
             #print cummulative_vector
             return np.divide(cummulative_vector, numOfWord)
+
 
 def get_Vector(tweet):
     surpriseVector=cummulative_vector_wordList(get_wordList("surprised"))
