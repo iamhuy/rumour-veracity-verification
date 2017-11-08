@@ -46,14 +46,17 @@ def collect_feature(tweet):
     # Whether the tweet contain dot dot dot or not and number of dot dot dot
     dotdotdot_occurrences = num_occurrences(tweet['text'], r'\.\.\.')
     feature_vector += [1 if dotdotdot_occurrences > 0 else 0, dotdotdot_occurrences]
+    # feature_vector += [1 if dotdotdot_occurrences > 0 else 0]
 
     # Whether the tweet contain exclamation mark or not and number of exclamation marks
     exclamation_mark_occurrences = num_occurrences(tweet['text'], r'!')
     feature_vector += [1 if exclamation_mark_occurrences > 0 else 0, exclamation_mark_occurrences]
+    # feature_vector += [1 if exclamation_mark_occurrences > 0 else 0]
 
     # Whether the tweet contain question mark or not and number of question marks
     question_mark_occurrences = num_occurrences(tweet['text'], r'\?')
     feature_vector += [1 if question_mark_occurrences > 0 else 0, question_mark_occurrences]
+    # feature_vector += [1 if question_mark_occurrences > 0 else 0]
 
     # Brown clusters
     brown_cluster_vector, has_url = brown_cluster(tweet['text'])
@@ -67,10 +70,13 @@ def collect_feature(tweet):
     feature_vector += get_trigram_postag_vector(tweet['text'])
 
     # Sentiment features
+    # sentiment_vector
     feature_vector += get_sentiment_value(tweet['text'])
 
     # Stance features
-    feature_vector += [STANCE_LABELS_MAPPING[tweet['stance']]]
+    stance_vector = [0,0,0,0]
+    stance_vector[STANCE_LABELS_MAPPING[tweet['stance']]] = 1
+    feature_vector += stance_vector
 
     # Emoticon feature
     feature_vector += get_emoticons_vectors(tweet['text'])
