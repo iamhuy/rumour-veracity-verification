@@ -1,5 +1,5 @@
 from dateutil import parser
-
+import preprocessor as p
 
 def timestamp_to_date(timestamp):
     """
@@ -21,3 +21,13 @@ def day_diff(timestamp1, timestamp2):
 
     return (timestamp_to_date(timestamp1) - timestamp_to_date(timestamp2)).days
 
+def preprocess_tweet(tweet):
+    """
+    Clean the tweet before feeding to other functions
+    :param tweet: a raw tweet
+    :return: tweet with URL, MENTIONS, EMOJI, HASTHTAGS removed
+    """
+    cleaned_tweet = tweet.lower()  # lowercase the tweet
+    p.set_options(p.OPT.URL, p.OPT.EMOJI, p.OPT.MENTION, p.OPT.HASHTAG)  # set options for the preprocessor
+    cleaned_tweet = p.clean(cleaned_tweet.encode("ascii", "ignore"))
+    return cleaned_tweet;
