@@ -1,17 +1,22 @@
-from nltk.parse.stanford import StanfordDependencyParser
+from src.features import stanford_dependency_parser
 def get_average_negation(tweet):
-    path_to_jar = '/home/potus/rumour-veracity-verification/data/external/stanford-corenlp-full-2017-06-09/stanford-corenlp-3.8.0.jar'
-    path_to_models_jar = '/home/potus/rumour-veracity-verification/data/external/stanford-corenlp-full-2017-06-09/stanford-corenlp-3.8.0-models.jar'
-    dependency_parser = StanfordDependencyParser(path_to_jar=path_to_jar, path_to_models_jar=path_to_models_jar)
-    result = dependency_parser.raw_parse(tweet)
+    """
+    Return the average negation and the bin value of having negation relation based on Stanford Parser
+    :param tweet: raw tweet
+    :return: the average of negation on total of relations and the binary of having negation or not
+    """
+    result = stanford_dependency_parser.raw_parse(tweet)
     dep = result.next()
-    dependecies=list(dep.triples())
-    count_negation=0;
-    for (_,rel,_) in dependecies:
-        if rel=='neg':
-            count_negation=count_negation+1
-            #print "To here"
-    #print count_negation
-    #print len(dependecies)
-    average=float(count_negation)/len(dependecies)
-    return average
+    dependencies = list(dep.triples())
+    average=0
+    hasNegation=0
+    if len(dependencies) > 0:
+        count_negation = 0;
+        for (_, rel, _) in dependencies:
+            if rel == 'neg':
+                count_negation += 1
+        if count_negation != 0:
+            hasNegation=1
+        average = float(count_negation)/len(dependencies)
+
+    return [average, hasNegation]
