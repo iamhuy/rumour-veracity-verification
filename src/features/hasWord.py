@@ -7,10 +7,12 @@ def check_existence_of_words(tweet, wordlist):
     :param wordlist:List of words
     :return: the binary vector of word in the tweet
     """
+
     tweet=preprocess_tweet(tweet)
     boolean=0
     for word in wordlist:
         if (tweet.find(word) != -1):
             boolean=1
             break
+
     return [boolean]
