@@ -11,13 +11,14 @@ def check_existence_of_words(tweet, wordlist):
     """
 
     tweet=preprocess_tweet(tweet)
-    boolean=0
+    found_word = 0
     for word in wordlist:
         if tweet.find(word) != -1:
-            boolean = 1
+            found_word = 1
             break
 
-    return [boolean]
+    return [found_word]
+
 
 def contain_google_bad_words(tweet):
     """
@@ -27,6 +28,7 @@ def contain_google_bad_words(tweet):
     """
     return check_existence_of_words(tweet, google_bad_words_list)
 
+
 def contain_noswearing_bad_words(tweet):
     """
     Return whether the tweet contains noswearing.com bad words or not
@@ -34,6 +36,7 @@ def contain_noswearing_bad_words(tweet):
     :return: a binary vector    """
 
     return check_existence_of_words(tweet, noswearing_bad_words_list)
+
 
 def contain_acronyms(tweet):
     """
