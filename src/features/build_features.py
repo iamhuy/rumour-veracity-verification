@@ -6,7 +6,7 @@ from src.data.constants import STANCE_LABELS_MAPPING
 from emoticon import get_emoticons_vectors
 from brown_cluster import brown_cluster
 from has_word import contain_noswearing_bad_words, contain_acronyms, contain_google_bad_words
-
+from regular_expressions import regex_vector
 
 def collect_feature(tweet):
     """
@@ -84,6 +84,9 @@ def collect_feature(tweet):
 
     # Has no swearing bad words
     feature_vector += contain_noswearing_bad_words(tweet['text'])
+
+    # Regex
+    feature_vector += regex_vector(tweet['text'])
 
 
     return feature_vector
