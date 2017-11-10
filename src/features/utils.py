@@ -23,6 +23,11 @@ def day_diff(timestamp1, timestamp2):
 
 
 def preprocess_tweet(tweet):
+    """
+    Preprocess the tweet before feeding to other function
+    :param tweet: Raw tweet
+    :return: tweet with URL, EMOJI, MENTION, HASHTAG removed
+    """
     cleaned_tweet = tweet.lower()  # lowercase the tweet
     p.set_options(p.OPT.URL, p.OPT.EMOJI, p.OPT.MENTION, p.OPT.HASHTAG)  # set options for the preprocessor
     cleaned_tweet = p.clean(cleaned_tweet.encode("ascii", "ignore"))
