@@ -1,8 +1,6 @@
 import gensim
 import os
-import requests
-import json
-import re
+import pickle
 from src.features import google_word2Vec_model
 from settings import DATA_EXTERNAL_ROOT
 
@@ -16,32 +14,20 @@ google_word2Vec_model = gensim.models.KeyedVectors.load_word2vec_format(google_w
 
 # Load the wordList of surprise, doubt, nodoubt
 
-def get_wordlist(feedingword):
+def get_wordlist(filename):
     """
-    Get the list of synonyms based on the feeding Word
-    :param feedingword: the word needed to find the synonyms
+    Read the list from the file
+    :param filename: the name of file of words
     :return: list of synonyms
     """
-    app_id = '93a6b0a3'
-    app_key = 'a8bab0b9458264690625fdd834421d10'
-
-    language = 'en'
-
-    url = 'https://od-api.oxforddictionaries.com:443/api/v1/entries/' + language + '/' + feedingword.lower() + '/synonyms;antonyms'
-
-    r = requests.get(url, headers={'app_id': app_id, 'app_key': app_key})
-
-    #regex for choosing just the single word (no hyphenated word, no phrase)
-    pattern = re.compile("(^(?!.*[-])(\w)+$)")
-
-    j = json.loads(r.text)
-    wordList = [feedingword]
-    for syn in (j["results"][0]["lexicalEntries"][0]["entries"][0]["senses"][0]["synonyms"]):
-        if pattern.match(syn["text"]):
-            wordList.append(syn["text"])
+    with open(filename, 'rb') as f:
+        wordList = pickle.load(f)
     return wordList
 
+surprisePath = os.path.join(DATA_EXTERNAL_ROOT, 'surprise_list_file')
+doubtPath = os.path.join(DATA_EXTERNAL_ROOT, 'doubt_list_file')
+noDoubtPath = os.path.join(DATA_EXTERNAL_ROOT, 'nodoubt_list_file')
 
-surpriseList = get_wordlist("surprised")
-doubtList = get_wordlist("uncertain")
-noDoubtList = get_wordlist("sure")
+surpriseList = get_wordlist(surprisePath)
+doubtList = get_wordlist(doubtPath)
+noDoubtList = get_wordlist(noDoubtPath)
