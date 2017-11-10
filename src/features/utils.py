@@ -1,5 +1,5 @@
 from dateutil import parser
-
+import preprocessor as p
 
 def timestamp_to_date(timestamp):
     """
@@ -44,3 +44,16 @@ def read_brown_cluster_file(brown_cluster_text_file):
 
 
     return brown_cluster_dict
+
+
+def preprocess_tweet(tweet):
+    """
+    Clean the tweet before feeding to other functions
+    :param tweet: a raw tweet
+    :return: tweet with URL, MENTIONS, EMOJI, HASTHTAGS removed
+    """
+    cleaned_tweet = tweet.lower()  # lowercase the tweet
+    p.set_options(p.OPT.URL, p.OPT.EMOJI, p.OPT.MENTION, p.OPT.HASHTAG)  # set options for the preprocessor
+    cleaned_tweet = p.clean(cleaned_tweet.encode("ascii", "ignore"))
+    return cleaned_tweet;
+
