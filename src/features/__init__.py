@@ -5,7 +5,7 @@ from utils import read_brown_cluster_file
 import pickle
 from src.lib.ark_twokenize_py import twokenize
 import re
-
+from nltk.tag.stanford import StanfordNERTagger
 # Read brown cluster from dict or from text file
 
 brown_cluster_dict_filepath = os.path.join(MODELS_ROOT, brown_cluster_dict_filename)
@@ -23,3 +23,8 @@ else:
 mention_regex = re.compile('^' + twokenize.AtMention + '$')
 url_regex = re.compile('^' + twokenize.url+ '$')
 url2_regex = re.compile(r"^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$")
+
+# Read the Stanford NER Parser
+stanford_ner_classifier = os.path.join(DATA_EXTERNAL_ROOT, 'stanford-ner-2017-06-09', 'classifiers', 'english.all.3class.distsim.crf.ser.gz')
+stanford_ner_jar = os.path.join(DATA_EXTERNAL_ROOT, 'stanford-ner-2017-06-09', 'stanford-ner.jar')
+stanford_ner = StanfordNERTagger(stanford_ner_classifier, stanford_ner_jar)
