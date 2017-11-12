@@ -38,8 +38,7 @@ def preprocess_and_tokenize_tweet(tweet):
     p.set_options(p.OPT.URL, p.OPT.EMOJI, p.OPT.MENTION, p.OPT.HASHTAG)  # set options for the preprocessor
     cleaned_tweet = p.clean(cleaned_tweet.encode('ascii', 'ignore'))
     tweet_words = remove_stopwords_and_tokenize(cleaned_tweet)  # remove stopwords
-    return tweet_words;
-
+    return tweet_words
 
 
 def cumulative_vector_wordList(wordList):
@@ -48,7 +47,7 @@ def cumulative_vector_wordList(wordList):
     :param wordList: the list of words
     :return: the 300d if wordList is not empty, otherwise None. Also None when cannot find any word in the dictionary
     """
-    logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+    # logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
     numOfWord = len(wordList)
     if numOfWord>0:
         cumulative_vector = np.zeros((300,), dtype=np.float)
@@ -65,17 +64,21 @@ def cumulative_vector_wordList(wordList):
     else:
         return None
 
-def get_Vectors(tweet):
+
+# Get cumulative vectors
+surpriseVector = cumulative_vector_wordList(surpriseList)
+doubtVector = cumulative_vector_wordList(doubtList)
+noDoubtVector = cumulative_vector_wordList(noDoubtList)
+
+
+
+def get_vectors(tweet):
     """
     Get vectors of cosine similarity between tweet and [surprise, doubt, nodoubt]
     :param tweet: raw tweet
     :return: vector of 3 cosine vectors, surpriseScore, doubtScore, nodoubtScore
     """
 
-    #Get cumulative vectors
-    surpriseVector=cumulative_vector_wordList(surpriseList)
-    doubtVector=cumulative_vector_wordList(doubtList)
-    noDoubtVector=cumulative_vector_wordList(noDoubtList)
     tweetVector=cumulative_vector_wordList(preprocess_and_tokenize_tweet(tweet))
 
     #Calculate the cosine similarities

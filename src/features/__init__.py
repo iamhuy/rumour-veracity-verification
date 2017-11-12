@@ -1,16 +1,15 @@
 import gensim
 import os
 import pickle
-from src.features import google_word2Vec_model
+import nltk
 from settings import DATA_EXTERNAL_ROOT
 
 # Load Google's pre-trained Word2Vec model.
 
+print "Starting loading word2vec model !"
 google_word2Vec_path=os.path.join(DATA_EXTERNAL_ROOT, 'GoogleNews-vectors-negative300.bin')
-google_word2Vec_model = gensim.models.KeyedVectors.load_word2vec_format(google_word2Vec_path,
-                                                                        binary=True, limit=1000000)
-
-
+google_word2Vec_model = gensim.models.KeyedVectors.load_word2vec_format(google_word2Vec_path, binary=True, limit=100000)
+print "Finish loading word2vec model !"
 
 # Load the wordList of surprise, doubt, nodoubt
 
@@ -31,3 +30,4 @@ noDoubtPath = os.path.join(DATA_EXTERNAL_ROOT, 'nodoubt_list_file')
 surpriseList = get_wordlist(surprisePath)
 doubtList = get_wordlist(doubtPath)
 noDoubtList = get_wordlist(noDoubtPath)
+nltk.download('stopwords')

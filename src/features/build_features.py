@@ -3,7 +3,7 @@ from user_features import *
 from pos_tag import get_bigram_postag_vector, get_trigram_postag_vector
 from sentiment_StanfordNLP import get_sentiment_value
 from src.data.constants import STANCE_LABELS_MAPPING
-
+from get_score import get_vectors
 
 def collect_feature(tweet):
     """
@@ -56,5 +56,7 @@ def collect_feature(tweet):
     feature_vector += get_trigram_postag_vector(tweet['text'])
     feature_vector += get_sentiment_value(tweet['text'])
     feature_vector += [STANCE_LABELS_MAPPING[tweet['stance']]]
+
+    feature_vector += get_vectors(tweet['text'])
 
     return feature_vector
