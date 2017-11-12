@@ -1,6 +1,6 @@
 from num_occurrences import num_occurrences
 from user_features import *
-from pos_tag import get_bigram_postag_vector, get_trigram_postag_vector
+from pos_tag import get_ngram_postag_vector
 from sentiment_StanfordNLP import get_sentiment_value
 from src.data.constants import STANCE_LABELS_MAPPING
 from emoticon import get_emoticons_vectors
@@ -73,8 +73,10 @@ def collect_feature(tweet):
     feature_vector += [1 if has_url else 0]
 
     # Postag features
-    feature_vector += get_bigram_postag_vector(tweet['text'])
-    feature_vector += get_trigram_postag_vector(tweet['text'])
+    feature_vector += get_ngram_postag_vector(tweet['text'], 1)
+    feature_vector += get_ngram_postag_vector(tweet['text'], 2)
+    feature_vector += get_ngram_postag_vector(tweet['text'], 3)
+    feature_vector += get_ngram_postag_vector(tweet['text'], 4)
 
     # Sentiment features
     feature_vector += get_sentiment_value(tweet['text'])

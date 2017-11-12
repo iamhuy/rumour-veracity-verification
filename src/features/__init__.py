@@ -7,6 +7,8 @@ import gensim
 import os
 import pickle
 import nltk
+import itertools
+
 
 # Read brown cluster from dict or from text file
 
@@ -25,7 +27,6 @@ else:
 mention_regex = re.compile('^' + twokenize.AtMention + '$')
 url_regex = re.compile('^' + twokenize.url+ '$')
 url2_regex = re.compile(r"^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$")
-
 
 
 # Read the list of the bad words, acronyms
@@ -81,3 +82,34 @@ surpriseList = get_wordlist(surprisePath)
 doubtList = get_wordlist(doubtPath)
 noDoubtList = get_wordlist(noDoubtPath)
 nltk.download('stopwords')
+
+
+#Prepare the tag-set
+
+def prepare_tag(n):
+    """
+    Prepare the combination of the tagset
+    :param n: the number of gram
+    :return: the tag set relating to n
+    """
+    tag_set = ['ADJ', 'ADP', 'ADV', 'CONJ', 'DET', 'NOUN', 'NUM', 'PRT', 'PRON', 'VERB', '.', 'X']
+    ngram_tag=[]
+    if n == 1:
+        for i in tag_set:
+            ngram_tag.append("('"+i+"')")
+    elif n == 2:
+        for i in itertools.product(tag_set, tag_set):
+            ngram_tag.append(str(i))
+    elif n == 3:
+        for i in itertools.product(tag_set, tag_set, tag_set):
+            ngram_tag.append(str(i))
+    elif n == 4:
+        for i in itertools.product(tag_set, tag_set, tag_set, tag_set):
+            ngram_tag.append(str(i))
+    return ngram_tag
+
+monogram_tagset = prepare_tag(1)
+bigram_tagset = prepare_tag(2)
+trigram_tagset = prepare_tag(3)
+fourgram_tagset = prepare_tag(4)
+
