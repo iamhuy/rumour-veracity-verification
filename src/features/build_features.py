@@ -8,6 +8,7 @@ from brown_cluster import brown_cluster
 from has_word import contain_noswearing_bad_words, contain_acronyms, contain_google_bad_words
 from regular_expressions import regex_vector
 from get_score import get_vectors
+from word_length import average_word_length, description_length
 
 
 def collect_feature(tweet):
@@ -21,6 +22,12 @@ def collect_feature(tweet):
 
     # Whether the user has description or not.
     feature_vector += has_description(tweet['user'])
+
+    # Length of user description in words
+    feature_vector += [description_length(tweet['user'])]
+
+    # Average length of a word
+    feature_vector += [average_word_length(tweet['text'])]
 
     # Whether the user has enabled geo-location or not.
     feature_vector += geo_enabled(tweet['user'])
