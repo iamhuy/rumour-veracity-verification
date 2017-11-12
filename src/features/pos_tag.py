@@ -1,32 +1,7 @@
 #!/usr/bin/python
 import nltk
-import itertools
 from utils import preprocess_tweet
-
-# Just prepare once for 4 cases for using after
-def prepare_tag(n):
-    """
-    Prepare the combination of the tagset
-    :param n: the number of gram
-    :return: the tag set relating to n
-    """
-    tag_set = ['ADJ', 'ADP', 'ADV', 'CONJ', 'DET', 'NOUN', 'NUM', 'PRT', 'PRON', 'VERB', '.', 'X']
-    ngram_tag=[]
-    if n == 1:
-        for i in tag_set:
-            ngram_tag.append("('"+i+"')")
-    elif n == 2:
-        for i in itertools.product(tag_set, tag_set):
-            ngram_tag.append(str(i))
-    elif n == 3:
-        for i in itertools.product(tag_set, tag_set, tag_set):
-            ngram_tag.append(str(i))
-    elif n == 4:
-        for i in itertools.product(tag_set, tag_set, tag_set, tag_set):
-            ngram_tag.append(str(i))
-    return ngram_tag
-
-
+from src.features import monogram_tagset, bigram_tagset, trigram_tagset, fourgram_tagset
 
 def get_ngram_postag_vector(tweet, n):
     """
@@ -36,7 +11,14 @@ def get_ngram_postag_vector(tweet, n):
     :return: Vector of ngram tagging using Universal tagging
     """
     #prepare the tag
-    ngram_tag = prepare_tag(n)
+    if n==1:
+        ngram_tag=monogram_tagset
+    elif n==2:
+        ngram_tag=bigram_tagset
+    elif n==3:
+        ngram_tag=trigram_tagset
+    elif n==4:
+        ngram_tag=fourgram_tagset
     #preprocess tweet, remove emoticons, hashtags, metions
     tweet=preprocess_tweet(tweet)
 
