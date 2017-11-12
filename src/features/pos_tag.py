@@ -3,7 +3,7 @@ import nltk
 import itertools
 from utils import preprocess_tweet
 
-
+# Just prepare once for 4 cases for using after
 def prepare_tag(n):
     """
     Prepare the combination of the tagset
@@ -25,6 +25,8 @@ def prepare_tag(n):
         for i in itertools.product(tag_set, tag_set, tag_set, tag_set):
             ngram_tag.append(str(i))
     return ngram_tag
+
+
 
 def get_ngram_postag_vector(tweet, n):
     """
