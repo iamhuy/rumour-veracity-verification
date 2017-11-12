@@ -15,4 +15,5 @@ def regex_vector(tweet):
     for i in range(0, len(pattern_compiled)):
         if pattern_compiled[i].findall(tweet):
             patterns_vector[i] = 1
+
     return patterns_vector

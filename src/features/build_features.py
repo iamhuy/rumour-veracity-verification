@@ -3,10 +3,14 @@ from user_features import *
 from pos_tag import get_bigram_postag_vector, get_trigram_postag_vector
 from sentiment_StanfordNLP import get_sentiment_value
 from src.data.constants import STANCE_LABELS_MAPPING
+<<<<<<< HEAD
 from emoticon import get_emoticons_vectors
 from brown_cluster import brown_cluster
 from has_word import contain_noswearing_bad_words, contain_acronyms, contain_google_bad_words
 from regular_expressions import regex_vector
+=======
+from get_score import get_vectors
+>>>>>>> score
 
 def collect_feature(tweet):
     """
@@ -73,6 +77,7 @@ def collect_feature(tweet):
     # Stance features
     feature_vector += [STANCE_LABELS_MAPPING[tweet['stance']]]
 
+
     # Emoticon feature
     feature_vector += get_emoticons_vectors(tweet['text'])
 
@@ -87,6 +92,9 @@ def collect_feature(tweet):
 
     # Regex
     feature_vector += regex_vector(tweet['text'])
+
+    # Doubt Score, No Doubt Score, Surprise score
+    feature_vector += get_vectors(tweet['text'])
 
 
     return feature_vector

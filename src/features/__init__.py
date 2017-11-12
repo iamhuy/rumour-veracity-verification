@@ -1,11 +1,12 @@
-import os
 from settings import MODELS_ROOT, DATA_EXTERNAL_ROOT
 from constants import brown_cluster_dict_filename
 from utils import read_brown_cluster_file
-import pickle
 from src.lib.ark_twokenize_py import twokenize
 import re
-
+import gensim
+import os
+import pickle
+import nltk
 
 # Read brown cluster from dict or from text file
 
@@ -50,6 +51,33 @@ noswearing_bad_words_list=readList(noswearing_bad_words_path)
 netlingo_acronyms_list=readList(netlingo_acronyms_path)
 
 
-# Read the model for Stanford NLP
+
+# Load Google's pre-trained Word2Vec model.
+
+print "Starting loading word2vec model !"
+google_word2Vec_path=os.path.join(DATA_EXTERNAL_ROOT, 'GoogleNews-vectors-negative300.bin')
+google_word2Vec_model = gensim.models.KeyedVectors.load_word2vec_format(google_word2Vec_path, binary=True, limit=100000)
+print "Finish loading word2vec model !"
 
 
+
+# Load the wordList of surprise, doubt, nodoubt
+
+def get_wordlist(filename):
+    """
+    Read the list from the file
+    :param filename: the name of file of words
+    :return: list of synonyms
+    """
+    with open(filename, 'rb') as f:
+        wordList = pickle.load(f)
+    return wordList
+
+surprisePath = os.path.join(DATA_EXTERNAL_ROOT, 'surprise_list_file')
+doubtPath = os.path.join(DATA_EXTERNAL_ROOT, 'doubt_list_file')
+noDoubtPath = os.path.join(DATA_EXTERNAL_ROOT, 'nodoubt_list_file')
+
+surpriseList = get_wordlist(surprisePath)
+doubtList = get_wordlist(doubtPath)
+noDoubtList = get_wordlist(noDoubtPath)
+nltk.download('stopwords')
