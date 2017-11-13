@@ -12,6 +12,7 @@ An implementation for module Rumour Veracity Verification of PHEME proeject
 List of external sources:
 http://www.cs.cmu.edu/~ark/TweetNLP/clusters/50mpaths2
 
+
 List of src/lib
 https://github.com/myleott/ark-twokenize-py
 

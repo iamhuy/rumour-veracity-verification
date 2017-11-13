@@ -118,6 +118,7 @@ def get_sentiment_value(tweet):
                    })
     sentiment=int(res["sentences"][0]["sentimentValue"])
     return [sentiment]
+
 # def create_corpus_for_story(current_story):
 #     corpus = []
 #     sub_direc = get_immediate_subdirectories(fix_dict+current_story+"/")
