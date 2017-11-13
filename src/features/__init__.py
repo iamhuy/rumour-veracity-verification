@@ -9,7 +9,7 @@ import pickle
 import nltk
 import itertools
 from nltk.tag.stanford import StanfordNERTagger
-
+import time
 
 
 # Read brown cluster from dict or from text file
@@ -58,11 +58,12 @@ netlingo_acronyms_list=readList(netlingo_acronyms_path)
 
 # Load Google's pre-trained Word2Vec model.
 
+t1 = time.time()
 print "Starting loading word2vec model !"
 google_word2Vec_path=os.path.join(DATA_EXTERNAL_ROOT, 'GoogleNews-vectors-negative300.bin')
-google_word2Vec_model = gensim.models.KeyedVectors.load_word2vec_format(google_word2Vec_path, binary=True, limit=100000)
+google_word2Vec_model = gensim.models.KeyedVectors.load_word2vec_format(google_word2Vec_path, binary=True)
 print "Finish loading word2vec model !"
-
+print time.time() - t1
 
 # Load the wordList of surprise, doubt, nodoubt
 
