@@ -8,6 +8,8 @@ import os
 import pickle
 import nltk
 import itertools
+from nltk.tag.stanford import StanfordNERTagger
+
 
 
 # Read brown cluster from dict or from text file
@@ -27,6 +29,7 @@ else:
 mention_regex = re.compile('^' + twokenize.AtMention + '$')
 url_regex = re.compile('^' + twokenize.url+ '$')
 url2_regex = re.compile(r"^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$")
+
 
 
 # Read the list of the bad words, acronyms
@@ -59,7 +62,6 @@ print "Starting loading word2vec model !"
 google_word2Vec_path=os.path.join(DATA_EXTERNAL_ROOT, 'GoogleNews-vectors-negative300.bin')
 google_word2Vec_model = gensim.models.KeyedVectors.load_word2vec_format(google_word2Vec_path, binary=True, limit=100000)
 print "Finish loading word2vec model !"
-
 
 
 # Load the wordList of surprise, doubt, nodoubt
@@ -112,4 +114,11 @@ monogram_tagset = prepare_tag(1)
 bigram_tagset = prepare_tag(2)
 trigram_tagset = prepare_tag(3)
 fourgram_tagset = prepare_tag(4)
+
+
+# Read the Stanford NER Parser
+
+stanford_ner_classifier = os.path.join(DATA_EXTERNAL_ROOT, 'stanford-ner-2017-06-09', 'classifiers', 'english.all.3class.distsim.crf.ser.gz')
+stanford_ner_jar = os.path.join(DATA_EXTERNAL_ROOT, 'stanford-ner-2017-06-09', 'stanford-ner.jar')
+stanford_ner = StanfordNERTagger(stanford_ner_classifier, stanford_ner_jar)
 
