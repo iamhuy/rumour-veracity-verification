@@ -39,6 +39,7 @@ def prepare_processed_training_data():
         tweet_count = len(list_tweet_ids)
 
         for index, id  in enumerate(list_tweet_ids):
+            print event_name , '+', index
             source_tweet = json_from_file(os.path.join(event_folder_path, id))
             features = collect_feature(source_tweet)
             features_str = "\t".join([str(i) for i in features])
