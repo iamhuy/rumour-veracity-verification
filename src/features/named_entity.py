@@ -12,7 +12,6 @@ def get_named_entity(tweet):
     person_occur = 0
     org_occur = 0
     loc_occur = 0
-    money_occur = 0
 
     for (_, rel) in ner_tag:
         if rel=="PERSON":
@@ -21,6 +20,5 @@ def get_named_entity(tweet):
             org_occur+=1
         elif rel=="LOCATION":
             loc_occur+=1
-        elif rel=="MONEY":
-            money_occur+=1
-    return [person_occur, org_occur, loc_occur, money_occur]
+
+    return [person_occur, org_occur, loc_occur]
