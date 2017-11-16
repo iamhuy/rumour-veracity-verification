@@ -22,7 +22,7 @@ import numpy
 from sklearn import preprocessing
 from imblearn.over_sampling import SMOTE, ADASYN
 from collections import Counter
-
+from copy import deepcopy
 
 
 def instance_based( k):
@@ -60,40 +60,50 @@ def main():
             #         pickle.dump(lda, open(os.path.join(MODELS_ROOT, option + '-lda' + '.model'), "wb"))
             #         pickle.dump(model, open(os.path.join(MODELS_ROOT, option + '.model'), "wb"))
 
-            for k in range(1, 10, 1):
+            for k in range(1, 15, 1):
                 logo = LeaveOneGroupOut()
                 fold_scores = numpy.array([])
-                model2 = KNeighborsClassifier(k)
-                X_r2, y_r2 = SMOTE().fit_sample(X, y)
+
+                model2 = KNeighborsClassifier(1)
+
+                X_r2 = deepcopy(X)
+                y_r2 = deepcopy(y)
+
                 scaler2 = preprocessing.MaxAbsScaler().fit(X_r2)
                 X_r2 = scaler2.transform(X_r2)
-                model2.fit(X_r2, y_r2)
 
+                X_r2, y_r2 = SMOTE(k_neighbors=1).fit_sample(X_r2, y_r2)
+
+                lda2 = PCA(n_components=300)
+                lda2.fit(X_r2, y_r2)
+                X_r2 = lda2.transform(X_r2)
+
+                model2.fit(X_r2, y_r2)
 
 
                 for train_index, test_index in logo.split(X, y, groups):
                     X_train, X_test = get_array(train_index, X), get_array(test_index, X)
                     y_train, y_test = get_array(train_index, y), get_array(test_index, y)
 
-                    model = KNeighborsClassifier(k)
-
-                    X_train, y_train = SMOTE().fit_sample(X_train, y_train)
+                    model = KNeighborsClassifier(1)
 
                     scaler = preprocessing.MaxAbsScaler().fit(X_train)
                     X_train = scaler.transform(X_train)
                     X_test = scaler.transform(X_test)
 
+                    # print len(X_train)
+                    X_train, y_train = SMOTE(k_neighbors=1).fit_sample(X_train, y_train)
 
 
                     # print(sorted(Counter(y_train).items()))
 
+                    lda = PCA(n_components=300)
+                    lda.fit(X_train, y_train)
+                    X_train = lda.transform(X_train)
+                    X_test = lda.transform(X_test)
 
-
-                    # lda = PCA()
-                    # lda.fit(X_train, y_train)
-                    # X_new = lda.transform(X_train)
-                    # X_test_new = lda.transform(X_test)
                     model.fit(X_train, y_train)
+
                     y_pred = model.predict(X_test)
                     current_score = accuracy_score(y_pred, numpy.asarray(y_test))
 
@@ -103,7 +113,7 @@ def main():
                     # print y_test
 
 
-                    y_pred2 = model.predict(X_train)
+                    # y_pred2 = model.predict(X_train)
                     # print confusion_matrix(y_train, y_pred2)
                     # print accuracy_score(y_train, y_pred2).mean(), '\n'
                     #
@@ -119,48 +129,15 @@ def main():
                 # print fold_scores, mean(fold_scores)
                 print k, '\t\t', fold_scores, '\t\t', fold_scores.mean()
 
-            if current_score.mean() > max_score.mean():
-                max_score = current_score
-                pickle.dump(scaler2, open(os.path.join(MODELS_ROOT, option + '-lda' + '.model'), "wb"))
-                pickle.dump(model2, open(os.path.join(MODELS_ROOT, option + '.model'), "wb"))
 
 
+                # if fold_scores.mean() > max_score.mean(): 
+                max_score = fold_scores
+                pickle.dump(lda2, open(os.path.join(MODELS_ROOT, option + '-'+ str(k) +  '-lda' + '.model'), "wb"))
+                pickle.dump(scaler2, open(os.path.join(MODELS_ROOT, option + '-' + str(k) + '-scaler' + '.model'), "wb"))
+                pickle.dump(model2, open(os.path.join(MODELS_ROOT, option + '-'+ str(k) + '.model'), "wb"))
 
-            # logo = LeaveOneGroupOut()
-            # for feed in (1, 7):
-            #     fold_scores = []
-            #     for train_index, test_index in logo.split(X, y, groups):
-            #         X_train, X_test = get_array(train_index, X), get_array(test_index, X)
-            #         y_train, y_test = get_array(train_index, y), get_array(test_index, y)
-            #         n_test = len(test_index)
-            #
-            #         one_fold_score = []
-            #         ss = ShuffleSplit(n_splits=3, test_size=0.4,random_state = random.randint(1,1000))
-            #         for extra_train_index, test_index in ss.split(X_test):
-            #             extra_train_index = extra_train_index[:(n_test*feed/10)]
-            #             current_X_train = X_train + get_array(extra_train_index,X_test)
-            #             current_y_train = y_train + get_array(extra_train_index,y_test)
-            #             current_X_test = get_array(test_index, X_test)
-            #             current_y_test = get_array(test_index, y_test)
-            #
-            #             max_score = 0
-            #             for k in range(2,10,2):
-            #                 model = instance_based(k)
-            #                 lda = LinearDiscriminantAnalysis()
-            #                 lda.fit(current_X_train, current_y_train)
-            #                 X_new = lda.transform(current_X_train)
-            #                 model.fit(X_new, current_y_train)
-            #                 X_test_new = lda.transform(current_X_test)
-            #                 y_pred = model.predict(X_test_new)
-            #                 current_score = precision_score(y_pred, numpy.asarray(current_y_test), average = 'macro')
-            #                 max_score = max(max_score, current_score)
-            #
-            #             one_fold_score.append(max_score)
-            #
-            #         fold_scores.append(mean(one_fold_score))
-            #         # print fold_scores
-            #
-            #     print fold_scores, mean(fold_scores)
+
 
 
 
