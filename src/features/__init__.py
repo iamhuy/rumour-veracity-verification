@@ -61,7 +61,7 @@ netlingo_acronyms_list=readList(netlingo_acronyms_path)
 t1 = time.time()
 print "Starting loading word2vec model !"
 google_word2Vec_path=os.path.join(DATA_EXTERNAL_ROOT, 'GoogleNews-vectors-negative300.bin')
-google_word2Vec_model = gensim.models.KeyedVectors.load_word2vec_format(google_word2Vec_path, binary=True)
+google_word2Vec_model = gensim.models.KeyedVectors.load_word2vec_format(google_word2Vec_path, binary=True, limit = 100000)
 print "Finish loading word2vec model !"
 print time.time() - t1
 

@@ -19,9 +19,9 @@ def prepare_processed_training_data():
     processed_folder_path = os.path.join(DATA_PROCESSED_ROOT, DATASET_NAME)
     interim_folder_path = os.path.join(DATA_INTERIM_ROOT, DATASET_NAME)
 
-    if os.path.exists(processed_folder_path):
-        shutil.rmtree(processed_folder_path)
-    os.makedirs(processed_folder_path)
+    # if os.path.exists(processed_folder_path):
+    #     shutil.rmtree(processed_folder_path)
+    # os.makedirs(processed_folder_path)
 
 
     for event_name in DATASET_EVENTS:
@@ -31,26 +31,26 @@ def prepare_processed_training_data():
                           os.path.isfile(os.path.join(event_folder_path, name))]
 
         processed_event_folder_path = os.path.join(processed_folder_path, event_name)
-        os.makedirs(processed_event_folder_path)
+        # os.makedirs(processed_event_folder_path)
 
-        train_processed_file = open(os.path.join(processed_event_folder_path, 'train.txt'),"w")
-        train_processed_label_file = open(os.path.join(processed_event_folder_path, 'train_label.txt'), "w")
+        # train_processed_file = open(os.path.join(processed_event_folder_path, 'train.txt'),"w")
+        # train_processed_label_file = open(os.path.join(processed_event_folder_path, 'train_label.txt'), "w")
 
         tweet_count = len(list_tweet_ids)
 
         for index, id  in enumerate(list_tweet_ids):
             source_tweet = json_from_file(os.path.join(event_folder_path, id))
             features = collect_feature(source_tweet)
-            features_str = "\t".join([str(i) for i in features])
-            train_processed_file.write(features_str)
-            if index != tweet_count-1 :
-                train_processed_file.write('\n')
-            train_processed_label_file.write(str(VERACITY_LABELS_MAPPING[source_tweet['veracity']]))
-            if index != tweet_count-1 :
-                train_processed_label_file.write('\n')
-
-        train_processed_file.close()
-        train_processed_label_file.close()
+            # features_str = "\t".join([str(i) for i in features])
+        #     train_processed_file.write(features_str)
+        #     if index != tweet_count-1 :
+        #         train_processed_file.write('\n')
+        #     train_processed_label_file.write(str(VERACITY_LABELS_MAPPING[source_tweet['veracity']]))
+        #     if index != tweet_count-1 :
+        #         train_processed_label_file.write('\n')
+        #
+        # train_processed_file.close()
+        # train_processed_label_file.close()
 
 
 def prepare_processed_testing_data():
@@ -100,4 +100,4 @@ if __name__ == '__main__':
     load_dotenv(find_dotenv())
 
     prepare_processed_training_data()
-    prepare_processed_testing_data()
+    # prepare_processed_testing_data()
