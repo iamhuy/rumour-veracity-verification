@@ -7,3 +7,7 @@ DATA_EXTERNAL_ROOT = os.path.join(PROJECT_ROOT, 'data', 'external')
 
 MODELS_ROOT = os.path.join(PROJECT_ROOT, 'models')
 TRAINING_OPTIONS = ['instance-based', 'svm', 'j48', 'bayes', 'random-forest']
+FEATURE_OPTIONS = {
+    'social_features': ["num_followers", "favorites_score"],
+    'user_features': []
+}
