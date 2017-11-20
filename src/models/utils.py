@@ -1,7 +1,7 @@
 from src.data.constants import DATASET_EVENTS, DATASET_NAME, TESTSET_NAME
 from settings import *
 from src.models import feature_bitmask
-
+from copy import deepcopy
 
 def read_training_processed_data():
     """

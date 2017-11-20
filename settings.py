@@ -11,3 +11,14 @@ FEATURE_OPTIONS = {
     'social_features': ["num_followers", "favorites_score"],
     'user_features': []
 }
+
+TRAINING_SETTINGS = {
+    'features_subset':'social_features',
+    'balancing_class_algorithm': None,
+    'scale_option': None,
+    'reduce_dimension_algorithm': None,
+    'training_algorithm': {
+        'name': 'instance-based',
+        'k': 1,
+    }
+}
