@@ -85,21 +85,24 @@ def collect_feature(tweet):
     dotdotdot_occurrences = num_occurrences(tweet['text'], r'\.\.\.')
     feature_vector += [1 if dotdotdot_occurrences > 0 else 0, dotdotdot_occurrences]
     # feature_vector += [1 if dotdotdot_occurrences > 0 else 0]
-    feature_bitmask['has_dotdotdot'] = (pivot, len(feature_vector))
+    feature_bitmask['has_dotdotdot'] = (pivot, pivot+1)
+    feature_bitmask['num_dotdotdot'] = (pivot+1, pivot+2)
 
     # Whether the tweet contain exclamation mark or not and number of exclamation marks
     pivot = len(feature_vector)
     exclamation_mark_occurrences = num_occurrences(tweet['text'], r'!')
     feature_vector += [1 if exclamation_mark_occurrences > 0 else 0, exclamation_mark_occurrences]
     # feature_vector += [1 if exclamation_mark_occurrences > 0 else 0]
-    feature_bitmask['has_exclamation_mark'] = (pivot, len(feature_vector))
+    feature_bitmask['has_exclamation_mark'] = (pivot, pivot+1)
+    feature_bitmask['num_exclamation_mark'] = (pivot+1, pivot+2)
 
     # Whether the tweet contain question mark or not and number of question marks
     pivot = len(feature_vector)
     question_mark_occurrences = num_occurrences(tweet['text'], r'\?')
     feature_vector += [1 if question_mark_occurrences > 0 else 0, question_mark_occurrences]
-    # feature_vector += [1 if question_mark_occurrences > 0 else 0]
-    feature_bitmask['has_question_mark'] = (pivot, len(feature_vector))
+    feature_vector += [1 if question_mark_occurrences > 0 else 0]
+    feature_bitmask['has_question_mark'] = (pivot, pivot+1)
+    feature_bitmask['num_question_mark'] = (pivot+1, pivot+2)
 
     # Brown clusters
     pivot = len(feature_vector)
@@ -168,7 +171,9 @@ def collect_feature(tweet):
     # Doubt Score, No Doubt Score, Surprise score
     pivot = len(feature_vector)
     feature_vector += get_vectors(tweet['text'])
-    feature_bitmask['suprise_score'] = (pivot, len(feature_vector))
+    feature_bitmask['suprise_score'] = (pivot, pivot+1)
+    feature_bitmask['doubt_score'] = (pivot+1, pivot+2)
+    feature_bitmask['no_doubt_score'] = (pivot+2, pivot+3)
 
     # Get Named Entity Recognition
     pivot = len(feature_vector)
