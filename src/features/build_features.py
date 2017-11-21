@@ -10,7 +10,7 @@ from regular_expressions import regex_vector
 from get_score import get_vectors
 from word_length import average_word_length, description_length
 from named_entity import get_named_entity
-
+from negation import get_average_negation
 
 def collect_feature(tweet):
     """
@@ -112,5 +112,9 @@ def collect_feature(tweet):
 
     # Get Named Entity Recognition
     feature_vector += get_named_entity(tweet['text'])
+
+    # Negation
+    feature_vector += get_average_negation(tweet['text'])
+
 
     return feature_vector
