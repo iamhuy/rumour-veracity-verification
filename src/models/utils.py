@@ -3,6 +3,7 @@ from settings import *
 from src.models import feature_bitmask
 from copy import deepcopy
 
+
 def read_training_processed_data():
     """
     Read vectors of features and labels from processed/ folder
@@ -58,8 +59,8 @@ def get_subset_features(X, feature_option):
     X_new = []
     for instance in X:
         instance_new = []
-        for feature_name in FEATURE_OPTIONS[feature_option]:
-            start, end = feature_bitmask[feature_name]
+        for feature_index in FEATURE_OPTIONS[feature_option]:
+            start, end = feature_bitmask[FEATURE_LIST[feature_index]]
             instance_new += instance[start : end]
         X_new.append(instance_new)
 

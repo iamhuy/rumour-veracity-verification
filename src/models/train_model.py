@@ -1,6 +1,6 @@
 from macpath import norm_error
 from sklearn.naive_bayes import GaussianNB
-from settings import TRAINING_OPTIONS, MODELS_ROOT
+from settings import *
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -26,24 +26,18 @@ from copy import deepcopy
 from settings import FEATURE_OPTIONS
 from src.models import feature_bitmask
 from utils import get_subset_features, get_array
-
+import shutil
 
 
 def main():
     X, y, groups = read_training_processed_data()
     np.set_printoptions(precision=4)
 
-
-    features_subset = 'social_features'
-
-    balancing_class_algorithm = None
-    scale_option = None
-    reduce_dimension_algorithm = None
-
-    training_algorithm = {
-        'name': 'instance-based',
-        'k': 1,
-    }
+    features_subset = TRAINING_SETTINGS['features_subset']
+    balancing_class_algorithm = TRAINING_SETTINGS['balancing_class_algorithm']
+    scale_option = TRAINING_SETTINGS['scale_option']
+    reduce_dimension_algorithm = TRAINING_SETTINGS['reduce_dimension_algorithm']
+    training_algorithm = TRAINING_SETTINGS['training_algorithm']
 
     # balancing_class_algorithm = {
     #     'name': 'SMOTE',
@@ -75,6 +69,16 @@ def init_model(algo_option):
     if algo_option['name'] == 'instance-based':
         return KNeighborsClassifier(n_neighbors = algo_option['k'])
 
+    if algo_option['name'] == 'decision-tree':
+        class_weight = algo_option['class_weight'] if algo_option.has_key('class_weight') else None
+        random_state = algo_option['random_state'] if algo_option.has_key('random_state') else None
+        criterion = algo_option['criterion'] if algo_option.has_key('criterion') else 'gini'
+
+        return DecisionTreeClassifier(
+            class_weight= class_weight,
+            random_state=random_state,
+            criterion=criterion)
+
     return None
 
 
@@ -102,6 +106,7 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
 
     # Read processed file
     X_subset = get_subset_features(X, feature_option)
+    print len(X_subset[0])
     y_subset = deepcopy(y)
 
     logo = LeaveOneGroupOut()
@@ -114,8 +119,8 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
     for train_index, test_index in logo.split(X_subset, y_subset, groups):
 
         # Split train and test from folds
-        X_train, X_test = get_array(train_index, X), get_array(test_index, X)
-        y_train, y_test = get_array(train_index, y), get_array(test_index, y)
+        X_train, X_test = get_array(train_index, X_subset), get_array(test_index, X_subset)
+        y_train, y_test = get_array(train_index, y_subset), get_array(test_index, y_subset)
 
         # Init a classifer
         model = init_model(algo_option)
@@ -147,8 +152,8 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
 
         # Metrics
         matrix = confusion_matrix(np.asarray(y_test), y_pred)
-        false_false_rate = 1.0* matrix[0][1] / sum(matrix[0])  # could be high
-        false_true_rate = 1.0* matrix[1][0] / sum(matrix[:, 0])  # must be low
+        # false_false_rate = 1.0* matrix[0][1] / sum(matrix[0])  # could be high
+        # false_true_rate = 1.0* matrix[1][0] / sum(matrix[:, 0])  # must be low
         current_fold_accuracy = f1_score(np.asarray(y_test), y_pred, average='micro')
         current_fold_macro_f1 = f1_score(np.asarray(y_test), y_pred, average='macro')
         current_fold_weighted_f1 = f1_score(np.asarray(y_test), y_pred, average='weighted')
@@ -171,8 +176,8 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
 
     # TRAIN AND SAVE A MODEL FOR TESTING ON SEMEVAL TEST SET
 
-    X_train = deepcopy(X_subset)
-    y_train = deepcopy(y_subset)
+    X_train = X_subset
+    y_train = y_subset
 
     # Init a classifer
     model = init_model(algo_option)
@@ -202,10 +207,16 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
 
     # Save model
     pickle.dump(model, open(os.path.join(MODELS_ROOT,'classifier.model'),"wb"))
+    if os.path.exists(os.path.join(MODELS_ROOT, 'scaler.model')):
+        shutil.rmtree(os.path.join(MODELS_ROOT, 'scaler.model'))
     if scaler != None:
         pickle.dump(scaler, open(os.path.join(MODELS_ROOT, 'scaler.model'), "wb"))
+    if os.path.exists(os.path.join(MODELS_ROOT, 'balancer.model')):
+        shutil.rmtree(os.path.join(MODELS_ROOT, 'balancer.model'))
     if balancer != None:
         pickle.dump(balancer, open(os.path.join(MODELS_ROOT, 'balancer.model'), "wb"))
+    if os.path.exists(os.path.join(MODELS_ROOT, 'reducer.model')):
+        shutil.rmtree(os.path.join(MODELS_ROOT, 'reducer.model'))
     if reducer != None:
         pickle.dump(reducer, open(os.path.join(MODELS_ROOT, 'reducer.model'), "wb"))
 
