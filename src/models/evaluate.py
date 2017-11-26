@@ -35,7 +35,7 @@ def main():
         reducer = pickle.load(open(os.path.join(MODELS_ROOT, 'reducer.model'), "rb"))
         X_test = reducer.transform(X_test)
 
-
+    print len(X_test[0])
     y_pred_prob = classifier.predict_proba(X_test)
     y_pred = classifier.predict(X_test).tolist()
     y_actual = [(label, y_pred_prob[idx][label]) for idx, label in enumerate(y_pred)]

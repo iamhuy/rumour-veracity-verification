@@ -79,6 +79,9 @@ def init_model(algo_option):
             random_state=random_state,
             criterion=criterion)
 
+    if algo_option['name'] == "random-forest":
+        return RandomForestClassifier()
+
     return None
 
 
@@ -106,7 +109,6 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
 
     # Read processed file
     X_subset = get_subset_features(X, feature_option)
-    print len(X_subset[0])
     y_subset = deepcopy(y)
 
     logo = LeaveOneGroupOut()
@@ -207,16 +209,19 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
 
     # Save model
     pickle.dump(model, open(os.path.join(MODELS_ROOT,'classifier.model'),"wb"))
+
     if os.path.exists(os.path.join(MODELS_ROOT, 'scaler.model')):
-        shutil.rmtree(os.path.join(MODELS_ROOT, 'scaler.model'))
+        os.remove(os.path.join(MODELS_ROOT, 'scaler.model'))
     if scaler != None:
         pickle.dump(scaler, open(os.path.join(MODELS_ROOT, 'scaler.model'), "wb"))
+
     if os.path.exists(os.path.join(MODELS_ROOT, 'balancer.model')):
-        shutil.rmtree(os.path.join(MODELS_ROOT, 'balancer.model'))
+        os.remove(os.path.join(MODELS_ROOT, 'balancer.model'))
     if balancer != None:
         pickle.dump(balancer, open(os.path.join(MODELS_ROOT, 'balancer.model'), "wb"))
+
     if os.path.exists(os.path.join(MODELS_ROOT, 'reducer.model')):
-        shutil.rmtree(os.path.join(MODELS_ROOT, 'reducer.model'))
+        os.remove(os.path.join(MODELS_ROOT, 'reducer.model'))
     if reducer != None:
         pickle.dump(reducer, open(os.path.join(MODELS_ROOT, 'reducer.model'), "wb"))
 

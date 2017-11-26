@@ -71,9 +71,6 @@ TRAINING_SETTINGS = {
     'scale_option': None,
     'reduce_dimension_algorithm': None,
     'training_algorithm': {
-        'name': 'decision-tree',
-        # 'class_weight': 'balanced',
-        # 'random_state': 1,
-        # 'criterion': 'gini'
+        'name': 'random-forest'
     }
 }
