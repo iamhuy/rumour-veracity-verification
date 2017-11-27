@@ -12,7 +12,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.decomposition import PCA
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn import svm
-from sklearn.model_selection import ShuffleSplit
+from sklearn.model_selection import ShuffleSplit, StratifiedShuffleSplit
 from sklearn.metrics import *
 import pickle
 import logging
@@ -80,7 +80,9 @@ def init_model(algo_option):
             criterion=criterion)
 
     if algo_option['name'] == "random-forest":
-        return RandomForestClassifier()
+        random_state = algo_option['random_state'] if algo_option.has_key('random_state') else None
+        class_weight = algo_option['class_weight'] if algo_option.has_key('class_weight') else {0:1,1:1,2:1}
+        return RandomForestClassifier(random_state=random_state, class_weight=class_weight)
 
     return None
 
@@ -111,14 +113,16 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
     X_subset = get_subset_features(X, feature_option)
     y_subset = deepcopy(y)
 
-    logo = LeaveOneGroupOut()
+    logo = StratifiedShuffleSplit(n_splits=50, test_size=0.2, random_state=0)
     fold_accuracy_scores = np.zeros(0)
     fold_f1_macro_scores = np.zeros(0)
     fold_f1_weighted_scores = np.zeros(0)
+    fold_recall_scores = []
+    fold_precision_scores = []
 
     # 5 folds corresponding to 5 events
 
-    for train_index, test_index in logo.split(X_subset, y_subset, groups):
+    for train_index, test_index in logo.split(X_subset, y_subset):
 
         # Split train and test from folds
         X_train, X_test = get_array(train_index, X_subset), get_array(test_index, X_subset)
@@ -159,6 +163,8 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
         current_fold_accuracy = f1_score(np.asarray(y_test), y_pred, average='micro')
         current_fold_macro_f1 = f1_score(np.asarray(y_test), y_pred, average='macro')
         current_fold_weighted_f1 = f1_score(np.asarray(y_test), y_pred, average='weighted')
+        current_recall = recall_score(np.asarray(y_test), y_pred, average=None)
+        current_precision = precision_score(np.asarray(y_test), y_pred, average=None)
 
         # print "Micro f1-score (Accuracy):\t\t\t", current_fold_accuracy
         # print "Macro f1-score:\t\t\t", current_fold_macro_f1
@@ -169,11 +175,29 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
         fold_accuracy_scores = np.append(fold_accuracy_scores,current_fold_accuracy)
         fold_f1_macro_scores = np.append(fold_f1_macro_scores, current_fold_macro_f1)
         fold_f1_weighted_scores = np.append(fold_f1_weighted_scores, current_fold_weighted_f1)
+        fold_recall_scores.append(current_recall)
+        fold_precision_scores.append(current_precision)
+        # print current_recall
+        # print current_precision
+        # print confusion_matrix(np.asarray(y_test), y_pred)
+        # tmp = []
+        # for (index,x) in enumerate(model.feature_importances_):
+        #     if x!=0:
+        #         tmp.append((x,index))
+        # print sorted(tmp, reverse=True)
+        # raw_input()
 
 
-    print "Accuracy:\t\t", fold_accuracy_scores, '\t\t', fold_accuracy_scores.mean()
-    print "F1-macro:\t\t", fold_f1_macro_scores, '\t\t', fold_f1_macro_scores.mean()
-    print "F1-weighted:\t", fold_f1_weighted_scores, '\t\t', fold_f1_weighted_scores.mean()
+
+    # print "Accuracy:\t\t", fold_accuracy_scores, '\t\t', fold_accuracy_scores.mean()
+    # print "F1-macro:\t\t", fold_f1_macro_scores, '\t\t', fold_f1_macro_scores.mean()
+    # print "F1-weighted:\t", fold_f1_weighted_scores, '\t\t', fold_f1_weighted_scores.mean()
+
+    print "Accuracy:\t\t", fold_accuracy_scores.mean()
+    print "F1-macro:\t\t",  fold_f1_macro_scores.mean()
+    print "F1-weighted:\t", fold_f1_weighted_scores.mean()
+    print "Recall: \t\t", np.asarray(fold_recall_scores).mean(axis=0)
+    print "Precision: \t\t", np.asarray(fold_precision_scores).mean(axis=0)
 
 
     # TRAIN AND SAVE A MODEL FOR TESTING ON SEMEVAL TEST SET

@@ -64,13 +64,30 @@ FEATURE_OPTIONS = {
 
 TRAINING_SETTINGS = {
     'features_subset': 'all_features',
+
+    'balancing_class_algorithm': {
+        'name': 'SMOTE',
+        'k': 20
+    },
     'balancing_class_algorithm': None,
-    # 'scale_option': {
-    #     'name': 'MaxAbs',
-    # },
+
+
+    'scale_option': {
+        'name': 'MaxAbs',
+    },
     'scale_option': None,
+
+
+    'reduce_dimension_algorithm': {
+        'name' : 'PCA',
+        'n_components': 100
+    },
     'reduce_dimension_algorithm': None,
+
+
     'training_algorithm': {
-        'name': 'random-forest'
+        'name': 'decision-tree',
+        'random_state': 0,
+        # 'class_weight': {0:1,1:1,2:1}
     }
 }

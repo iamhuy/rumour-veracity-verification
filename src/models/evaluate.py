@@ -27,9 +27,9 @@ def main():
         scaler = pickle.load(open(os.path.join(MODELS_ROOT, 'scaler.model'), "rb"))
         X_test = scaler.transform(X_test)
 
-    if os.path.exists(os.path.join(MODELS_ROOT, 'balancer.model')):
-        balancer = pickle.load(open(os.path.join(MODELS_ROOT, 'balancer.model'), "rb"))
-        X_test = balancer.transform(X_test)
+    # if os.path.exists(os.path.join(MODELS_ROOT, 'balancer.model')):
+    #     balancer = pickle.load(open(os.path.join(MODELS_ROOT, 'balancer.model'), "rb"))
+    #     X_test = balancer.transform(X_test)
 
     if os.path.exists(os.path.join(MODELS_ROOT, 'reducer.model')):
         reducer = pickle.load(open(os.path.join(MODELS_ROOT, 'reducer.model'), "rb"))
