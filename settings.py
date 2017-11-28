@@ -1,10 +1,10 @@
 import os
+from sklearn.feature_selection import *
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 DATA_RAW_ROOT = os.path.join(PROJECT_ROOT, 'data', 'raw')
 DATA_INTERIM_ROOT = os.path.join(PROJECT_ROOT, 'data', 'interim')
 DATA_PROCESSED_ROOT = os.path.join(PROJECT_ROOT, 'data', 'processed')
 DATA_EXTERNAL_ROOT = os.path.join(PROJECT_ROOT, 'data', 'external')
-
 MODELS_ROOT = os.path.join(PROJECT_ROOT, 'models')
 
 FEATURE_LIST = [
@@ -48,11 +48,11 @@ FEATURE_LIST = [
     "stance"                    #37
 ]
 
-one_to_36 = range(1,37)
-one_to_36.remove(2)
+one_to_37 = range(1,38)
+one_to_37.remove(2)
 
 FEATURE_OPTIONS = {
-    'all_features': one_to_36,
+    'all_features': one_to_37,
     'lexical_features': [1, 33, 34, 35, 36, 4, 4, 17, 18, 19, 20, 21],
     'sentiment_features': [3, 6,  22, 23, 24, 37],
     'punctuation_features': [25, 26, 27, 28, 29, 30],
@@ -67,7 +67,7 @@ TRAINING_SETTINGS = {
 
     'balancing_class_algorithm': {
         'name': 'SMOTE',
-        'k': 20
+        'k': 2
     },
     'balancing_class_algorithm': None,
 
@@ -85,9 +85,17 @@ TRAINING_SETTINGS = {
     'reduce_dimension_algorithm': None,
 
 
+    'feature_selection_algorithm' : {
+        'name': 'k-best',
+        'score_func': chi2,
+        'k': 51
+    },
+    # 'feature_selection_algorithm': None,
+
+
     'training_algorithm': {
-        'name': 'decision-tree',
+        'name': 'random-forest',
         'random_state': 0,
-        # 'class_weight': {0:1,1:1,2:1}
+        'class_weight': {0:1.0,1:1000.0,2:1000.0}
     }
 }

@@ -5,7 +5,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
-from utils import read_training_processed_data
+from utils import read_training_processed_data, get_feature_name
 from sklearn.model_selection import LeaveOneGroupOut,  cross_val_score, cross_validate
 from sklearn.neighbors.nearest_centroid import NearestCentroid
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -27,6 +27,7 @@ from settings import FEATURE_OPTIONS
 from src.models import feature_bitmask
 from utils import get_subset_features, get_array
 import shutil
+from sklearn.feature_selection import *
 
 
 def main():
@@ -38,6 +39,7 @@ def main():
     scale_option = TRAINING_SETTINGS['scale_option']
     reduce_dimension_algorithm = TRAINING_SETTINGS['reduce_dimension_algorithm']
     training_algorithm = TRAINING_SETTINGS['training_algorithm']
+    feature_selection_algorithm = TRAINING_SETTINGS['feature_selection_algorithm']
 
     # balancing_class_algorithm = {
     #     'name': 'SMOTE',
@@ -62,12 +64,14 @@ def main():
         balancing_option = balancing_class_algorithm,
         scale_option = scale_option,
         reduce_dimension_option = reduce_dimension_algorithm,
+        feature_selection_option = feature_selection_algorithm
     )
 
 
 def init_model(algo_option):
-    if algo_option['name'] == 'instance-based':
-        return KNeighborsClassifier(n_neighbors = algo_option['k'])
+    if algo_option['name'] == 'knn':
+        k = algo_option['k'] if algo_option.has_key('k') else 5
+        return KNeighborsClassifier(n_neighbors = k)
 
     if algo_option['name'] == 'decision-tree':
         class_weight = algo_option['class_weight'] if algo_option.has_key('class_weight') else None
@@ -98,7 +102,17 @@ def init_scaler(scale_option):
     if scale_option['name'] == 'MaxAbs':
         return preprocessing.MaxAbsScaler()
 
+    if scale_option['name'] == 'MinMax':
+        return preprocessing.MinMaxScaler()
+
+    if scale_option['name'] == 'Robust':
+        return preprocessing.RobustScaler()
+
+    if scale_option['name'] == 'Standard':
+        return preprocessing.StandardScaler()
+
     return None
+
 
 def init_reduce_dimension_model(reduce_dimension_option):
     if reduce_dimension_option['name'] == 'PCA':
@@ -107,11 +121,40 @@ def init_reduce_dimension_model(reduce_dimension_option):
     return None
 
 
-def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_option, reduce_dimension_option):
+def init_feature_selection_model(feature_selection_option):
+    if feature_selection_option['name'] == 'variance-threshold':
+        threshold = feature_selection_option['threshold'] if feature_selection_option.has_key('threshold') else 0
+        return VarianceThreshold(threshold=threshold)
+
+
+    if feature_selection_option['name'] == 'k-best':
+        k = feature_selection_option['k'] if feature_selection_option.has_key('k') else 10
+        score_func = feature_selection_option['score_func'] if feature_selection_option.has_key('score_func') else f_classif
+        return SelectKBest(score_func=score_func, k=k)
+
+    return None
+
+
+def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_option, reduce_dimension_option, feature_selection_option):
 
     # Read processed file
-    X_subset = get_subset_features(X, feature_option)
-    y_subset = deepcopy(y)
+    # X_subset = get_subset_features(X, feature_option)
+    # y_subset = deepcopy(y)
+
+    X_subset = X
+    y_subset = y
+
+    feature_selector = None
+    if feature_selection_option != None:
+        feature_selector = init_feature_selection_model(feature_selection_option)
+        feature_selector.fit(X_subset, y_subset)
+        X_subset = feature_selector.transform(X_subset)
+
+    # print sorted(feature_selector.variances_, reverse=True)
+    print feature_selector.get_params
+    print feature_selector.get_support(indices=True)
+    print len(feature_selector.get_support(indices=True))
+    print Counter([get_feature_name(index) for index in feature_selector.get_support(indices=True)]).items()
 
     logo = StratifiedShuffleSplit(n_splits=50, test_size=0.2, random_state=0)
     fold_accuracy_scores = np.zeros(0)
@@ -249,12 +292,18 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
     if reducer != None:
         pickle.dump(reducer, open(os.path.join(MODELS_ROOT, 'reducer.model'), "wb"))
 
+    if os.path.exists(os.path.join(MODELS_ROOT, 'feature_selector.model')):
+        os.remove(os.path.join(MODELS_ROOT, 'feature_selector.model'))
+    if feature_selector != None:
+        pickle.dump(feature_selector, open(os.path.join(MODELS_ROOT, 'feature_selector.model'), "wb"))
+
     training_settings = {
         'features_subset': feature_option,
         'balancing_class_algorithm': balancing_option,
         'scale_option': scale_option,
         'reduce_dimension_algorithm': reduce_dimension_option,
-        'training_algorithm': algo_option
+        'training_algorithm': algo_option,
+        'feature_selection_algorithm': feature_selection_option
     }
 
     pickle.dump(training_settings, open(os.path.join(MODELS_ROOT,'settings.model'),"wb"))

@@ -69,3 +69,10 @@ def get_subset_features(X, feature_option):
 
 def get_array(idx_array, x):
     return [x[i] for i in idx_array]
+
+def get_feature_name(index):
+    for key, value in feature_bitmask.iteritems():
+        if index >= value[0] and index < value[1]:
+            return key
+
+    return 'unknown'
