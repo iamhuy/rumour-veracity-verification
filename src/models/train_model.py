@@ -28,6 +28,7 @@ from src.models import feature_bitmask
 from utils import get_subset_features, get_array
 import shutil
 from sklearn.feature_selection import *
+from sklearn.linear_model import *
 
 
 def main():
@@ -78,15 +79,26 @@ def init_model(algo_option):
         random_state = algo_option['random_state'] if algo_option.has_key('random_state') else None
         criterion = algo_option['criterion'] if algo_option.has_key('criterion') else 'gini'
 
-        return DecisionTreeClassifier(
-            class_weight= class_weight,
-            random_state=random_state,
-            criterion=criterion)
+        return DecisionTreeClassifier(class_weight= class_weight, random_state=random_state, criterion=criterion)
 
     if algo_option['name'] == "random-forest":
         random_state = algo_option['random_state'] if algo_option.has_key('random_state') else None
         class_weight = algo_option['class_weight'] if algo_option.has_key('class_weight') else {0:1,1:1,2:1}
         return RandomForestClassifier(random_state=random_state, class_weight=class_weight)
+
+    if algo_option['name'] == "gradient-boosting":
+        random_state = algo_option['random_state'] if algo_option.has_key('random_state') else None
+        n_estimators = algo_option['n_estimators'] if algo_option.has_key('n_estimators') else 100
+        learning_rate = algo_option['learning_rate'] if algo_option.has_key('learning_rate') else 0.1
+        verbose = algo_option['verbose'] if algo_option.has_key('verbose') else False
+        return GradientBoostingClassifier(random_state=random_state, n_estimators=n_estimators, learning_rate=learning_rate, verbose=verbose)
+
+    if algo_option['name'] == "extra-trees":
+        random_state = algo_option['random_state'] if algo_option.has_key('random_state') else None
+        n_estimators = algo_option['n_estimators'] if algo_option.has_key('n_estimators') else 100
+        class_weight = algo_option['class_weight'] if algo_option.has_key('class_weight') else None
+        bootstrap = algo_option['bootstrap'] if algo_option.has_key('bootstrap') else False
+        return ExtraTreesClassifier(random_state=random_state, n_estimators=n_estimators, class_weight=class_weight, bootstrap=bootstrap)
 
     return None
 
@@ -131,6 +143,32 @@ def init_feature_selection_model(feature_selection_option):
         k = feature_selection_option['k'] if feature_selection_option.has_key('k') else 10
         score_func = feature_selection_option['score_func'] if feature_selection_option.has_key('score_func') else f_classif
         return SelectKBest(score_func=score_func, k=k)
+
+    if feature_selection_option['name'] == 'fpr':
+        score_func = feature_selection_option['score_func'] if feature_selection_option.has_key('score_func') else f_classif
+        alpha = feature_selection_option['alpha'] if feature_selection_option.has_key('alpha') else 0.05
+        return SelectFpr(score_func=score_func, alpha=alpha)
+
+    if feature_selection_option['name'] == 'fdr':
+        score_func = feature_selection_option['score_func'] if feature_selection_option.has_key('score_func') else f_classif
+        alpha = feature_selection_option['alpha'] if feature_selection_option.has_key('alpha') else 0.05
+        return SelectFdr(score_func=score_func, alpha=alpha)
+
+    if feature_selection_option['name'] == 'fwe':
+        score_func = feature_selection_option['score_func'] if feature_selection_option.has_key('score_func') else f_classif
+        alpha = feature_selection_option['alpha'] if feature_selection_option.has_key('alpha') else 0.05
+        return SelectFwe(score_func=score_func, alpha=alpha)
+
+    if feature_selection_option['name'] == 'generic':
+        score_func = feature_selection_option['score_func'] if feature_selection_option.has_key('score_func') else f_classif
+        return GenericUnivariateSelect(score_func=score_func)
+
+    if feature_selection_option['name'] == 'from-model':
+        estimator = \
+            feature_selection_option['model'] if feature_selection_option.has_key('model') else LassoCV()
+        threshold = feature_selection_option['threshold'] if feature_selection_option.has_key('threshold') else 'mean'
+        prefit =  feature_selection_option['prefit'] if feature_selection_option.has_key('prefit') else False
+        return SelectFromModel(estimator=estimator, threshold=threshold, prefit=prefit)
 
     return None
 

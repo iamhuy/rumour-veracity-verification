@@ -1,5 +1,7 @@
 import os
 from sklearn.feature_selection import *
+from sklearn.ensemble import *
+
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 DATA_RAW_ROOT = os.path.join(PROJECT_ROOT, 'data', 'raw')
 DATA_INTERIM_ROOT = os.path.join(PROJECT_ROOT, 'data', 'interim')
@@ -67,35 +69,43 @@ TRAINING_SETTINGS = {
 
     'balancing_class_algorithm': {
         'name': 'SMOTE',
-        'k': 2
+        'k': 4
     },
-    'balancing_class_algorithm': None,
+    # 'balancing_class_algorithm': None,
 
 
     'scale_option': {
-        'name': 'MaxAbs',
+        'name': 'MinMax',
     },
-    'scale_option': None,
+    # 'scale_option': None,
 
 
     'reduce_dimension_algorithm': {
         'name' : 'PCA',
-        'n_components': 100
+        'n_components': 50
     },
-    'reduce_dimension_algorithm': None,
+    # 'reduce_dimension_algorithm': None,
 
 
     'feature_selection_algorithm' : {
         'name': 'k-best',
         'score_func': chi2,
-        'k': 51
+        'k': 100
+        # 'threshold': 0.25,
+        # 'prefit': True,
+        # 'model':ExtraTreesClassifier()
+        # 'alpha': 0.1
     },
     # 'feature_selection_algorithm': None,
 
 
     'training_algorithm': {
-        'name': 'random-forest',
+        'name': 'gradient-boosting',
         'random_state': 0,
-        'class_weight': {0:1.0,1:1000.0,2:1000.0}
+        # 'class_weight': {0:1,1:10,1:1},
+        'n_estimators': 100,
+        # 'bootstrap': True,
+        # 'verbose': True
+        'learning_rate': 0.1
     }
 }
