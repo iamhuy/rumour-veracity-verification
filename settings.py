@@ -1,6 +1,7 @@
 import os
 from sklearn.feature_selection import *
 from sklearn.ensemble import *
+from sklearn.metrics import *
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 DATA_RAW_ROOT = os.path.join(PROJECT_ROOT, 'data', 'raw')
@@ -69,20 +70,21 @@ TRAINING_SETTINGS = {
 
     'balancing_class_algorithm': {
         'name': 'SMOTE',
-        'k': 4
+        'k': 1
     },
     # 'balancing_class_algorithm': None,
 
 
     'scale_option': {
-        'name': 'MinMax',
+        'name': 'MaxAbs',
     },
     # 'scale_option': None,
 
 
     'reduce_dimension_algorithm': {
         'name' : 'PCA',
-        'n_components': 50
+        'n_components': 30,
+        'random_state': 0
     },
     # 'reduce_dimension_algorithm': None,
 
@@ -93,7 +95,7 @@ TRAINING_SETTINGS = {
         'k': 100
         # 'threshold': 0.25,
         # 'prefit': True,
-        # 'model':ExtraTreesClassifier()
+        # 'model':RandomForestClassifier(random_state=0)
         # 'alpha': 0.1
     },
     # 'feature_selection_algorithm': None,

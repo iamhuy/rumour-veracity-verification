@@ -105,7 +105,8 @@ def init_model(algo_option):
 
 def init_balancing_model(balancing_option):
     if balancing_option['name'] == 'SMOTE':
-        return SMOTE(k_neighbors = balancing_option['k'])
+        random_state = balancing_option['random_state'] if balancing_option.has_key('random_state') else None
+        return SMOTE(k_neighbors = balancing_option['k'], random_state=random_state)
 
     return None
 
@@ -128,7 +129,8 @@ def init_scaler(scale_option):
 
 def init_reduce_dimension_model(reduce_dimension_option):
     if reduce_dimension_option['name'] == 'PCA':
-        return PCA(n_components=reduce_dimension_option['n_components'])
+        random_state = reduce_dimension_option['random_state'] if reduce_dimension_option.has_key('random_state') else None
+        return PCA(n_components=reduce_dimension_option['n_components'], random_state=random_state)
 
     return None
 
@@ -194,7 +196,7 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
     print len(feature_selector.get_support(indices=True))
     print Counter([get_feature_name(index) for index in feature_selector.get_support(indices=True)]).items()
 
-    logo = StratifiedShuffleSplit(n_splits=50, test_size=0.2, random_state=0)
+    logo = StratifiedShuffleSplit(n_splits=30, test_size=0.2, random_state=0)
     fold_accuracy_scores = np.zeros(0)
     fold_f1_macro_scores = np.zeros(0)
     fold_f1_weighted_scores = np.zeros(0)
@@ -202,9 +204,11 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
     fold_precision_scores = []
 
     # 5 folds corresponding to 5 events
+    i = 0
 
     for train_index, test_index in logo.split(X_subset, y_subset):
-
+        print i
+        i+=1
         # Split train and test from folds
         X_train, X_test = get_array(train_index, X_subset), get_array(test_index, X_subset)
         y_train, y_test = get_array(train_index, y_subset), get_array(test_index, y_subset)
@@ -311,6 +315,12 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
 
     # Fit prerocessed data to classifer model
     model.fit(X_train, y_train)
+
+    importances = model.feature_importances_
+    sorted_idx = np.argsort(importances)
+    feature_ranking = [(i,get_feature_name(i)) for i in sorted_idx]
+    print feature_ranking
+
 
     # Save model
     pickle.dump(model, open(os.path.join(MODELS_ROOT,'classifier.model'),"wb"))
