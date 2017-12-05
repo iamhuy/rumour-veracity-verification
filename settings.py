@@ -70,15 +70,16 @@ TRAINING_SETTINGS = {
 
     'balancing_class_algorithm': {
         'name': 'SMOTE',
-        'k': 1
+        'random_state': 0,
+        'k': 10
     },
-    # 'balancing_class_algorithm': None,
+    'balancing_class_algorithm': None,
 
 
     'scale_option': {
         'name': 'MaxAbs',
     },
-    # 'scale_option': None,
+    'scale_option': None,
 
 
     'reduce_dimension_algorithm': {
@@ -86,13 +87,13 @@ TRAINING_SETTINGS = {
         'n_components': 30,
         'random_state': 0
     },
-    # 'reduce_dimension_algorithm': None,
+    'reduce_dimension_algorithm': None,
 
 
     'feature_selection_algorithm' : {
         'name': 'k-best',
         'score_func': chi2,
-        'k': 100
+        'k': 50
         # 'threshold': 0.25,
         # 'prefit': True,
         # 'model':RandomForestClassifier(random_state=0)

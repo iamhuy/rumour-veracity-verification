@@ -3,12 +3,13 @@ import pickle
 import logging
 import os
 from settings import MODELS_ROOT
-from utils import read_testing_processed_data
+from utils import *
 from semeval_scorer import sem_eval_score
 from collections import Counter
 from sklearn.metrics import confusion_matrix, f1_score
 from utils import get_subset_features
 import numpy as np
+from copy import deepcopy
 
 def main():
     X_test, y_test = read_testing_processed_data()
@@ -43,7 +44,8 @@ def main():
 
     print len(X_test[0])
     y_pred_prob = classifier.predict_proba(X_test)
-    y_pred = classifier.predict(X_test).tolist()
+    y_pred = predict_with_false_priority(y_pred_prob, false_priority=1.0)
+    # y_pred = classifier.predict(X_test).tolist()
     y_actual = [(label, y_pred_prob[idx][label]) for idx, label in enumerate(y_pred)]
 
     matrix = confusion_matrix(np.asarray(y_test), y_pred)

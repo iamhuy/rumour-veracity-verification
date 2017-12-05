@@ -2,6 +2,7 @@ from src.data.constants import DATASET_EVENTS, DATASET_NAME, TESTSET_NAME
 from settings import *
 from src.models import feature_bitmask
 from copy import deepcopy
+import numpy as np
 
 
 def read_training_processed_data():
@@ -76,3 +77,15 @@ def get_feature_name(index):
             return key
 
     return 'unknown'
+
+def predict_with_false_priority(y_pred_prob, false_priority=1.0, ):
+    y_pred = []
+    for x in y_pred_prob:
+        a = deepcopy(x)
+        s = a[0] + a[1] * false_priority + a[2]
+        a[0] = a[0] / s
+        a[1] = a[1] * false_priority / s
+        a[2] = a[2] / s
+        y_pred.append(np.argmax(a))
+
+    return y_pred

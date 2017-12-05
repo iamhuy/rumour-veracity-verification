@@ -25,7 +25,7 @@ from collections import Counter
 from copy import deepcopy
 from settings import FEATURE_OPTIONS
 from src.models import feature_bitmask
-from utils import get_subset_features, get_array
+from utils import *
 import shutil
 from sklearn.feature_selection import *
 from sklearn.linear_model import *
@@ -33,6 +33,13 @@ from sklearn.linear_model import *
 
 def main():
     X, y, groups = read_training_processed_data()
+
+    # X_add, y_add = read_testing_processed_data()
+    #
+    # X = X + X_add
+    # y = y + y_add
+
+    print len(X)
     np.set_printoptions(precision=4)
 
     features_subset = TRAINING_SETTINGS['features_subset']
@@ -196,7 +203,7 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
     print len(feature_selector.get_support(indices=True))
     print Counter([get_feature_name(index) for index in feature_selector.get_support(indices=True)]).items()
 
-    logo = StratifiedShuffleSplit(n_splits=30, test_size=0.2, random_state=0)
+    logo = ShuffleSplit(n_splits=50, test_size=0.2, random_state=0)
     fold_accuracy_scores = np.zeros(0)
     fold_f1_macro_scores = np.zeros(0)
     fold_f1_weighted_scores = np.zeros(0)
@@ -239,7 +246,9 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
         model.fit(X_train, y_train)
 
         # Predict
-        y_pred = model.predict(X_test)
+        y_pred_prob = model.predict_proba(X_test)
+        y_pred = predict_with_false_priority(y_pred_prob, false_priority=1.0)
+        # y_pred = model.predict(X_test)
 
         # Metrics
         matrix = confusion_matrix(np.asarray(y_test), y_pred)
