@@ -23,9 +23,10 @@ def prepare_processed_training_data():
         shutil.rmtree(processed_folder_path)
     os.makedirs(processed_folder_path)
 
-
+    i=0
     for event_name in DATASET_EVENTS:
-
+        i+=1
+        print i
         event_folder_path = os.path.join(interim_folder_path, event_name)
         list_tweet_ids = [name for name in os.listdir(event_folder_path) if
                           os.path.isfile(os.path.join(event_folder_path, name))]
