@@ -22,25 +22,19 @@ def main():
     settings = pickle.load(open(os.path.join(MODELS_ROOT, 'settings.model'), "rb"))
     # X_test = get_subset_features(X_test, feature_option=settings['features_subset'])
 
-    if settings['feature_selection_algorithm'] != None:
-        feature_selector = pickle.load(open(os.path.join(MODELS_ROOT, 'feature_selector.model'), "rb"))
-        X_test = feature_selector.transform(X_test)
-
-    classifier = pickle.load(open(os.path.join(MODELS_ROOT, 'classifier.model'), "rb"))
-
-    # if os.path.exists(os.path.join(MODELS_ROOT, 'scaler.model')):
     if settings['scale_option'] != None:
         scaler = pickle.load(open(os.path.join(MODELS_ROOT, 'scaler.model'), "rb"))
         X_test = scaler.transform(X_test)
 
-    # if os.path.exists(os.path.join(MODELS_ROOT, 'balancer.model')):
-    #     balancer = pickle.load(open(os.path.join(MODELS_ROOT, 'balancer.model'), "rb"))
-    #     X_test = balancer.transform(X_test)
+    if settings['feature_selection_algorithm'] != None:
+        feature_selector = pickle.load(open(os.path.join(MODELS_ROOT, 'feature_selector.model'), "rb"))
+        X_test = feature_selector.transform(X_test)
 
-    # if os.path.exists(os.path.join(MODELS_ROOT, 'reducer.model')):
     if settings['reduce_dimension_algorithm'] != None:
         reducer = pickle.load(open(os.path.join(MODELS_ROOT, 'reducer.model'), "rb"))
         X_test = reducer.transform(X_test)
+
+    classifier = pickle.load(open(os.path.join(MODELS_ROOT, 'classifier.model'), "rb"))
 
     print len(X_test[0])
     y_pred_prob = classifier.predict_proba(X_test)

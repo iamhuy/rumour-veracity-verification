@@ -191,19 +191,7 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
     X_subset = X
     y_subset = y
 
-    feature_selector = None
-    if feature_selection_option != None:
-        feature_selector = init_feature_selection_model(feature_selection_option)
-        feature_selector.fit(X_subset, y_subset)
-        X_subset = feature_selector.transform(X_subset)
-
-    # print sorted(feature_selector.variances_, reverse=True)
-    print feature_selector.get_params
-    print feature_selector.get_support(indices=True)
-    print len(feature_selector.get_support(indices=True))
-    print Counter([get_feature_name(index) for index in feature_selector.get_support(indices=True)]).items()
-
-    logo = ShuffleSplit(n_splits=50, test_size=0.2, random_state=0)
+    logo = StratifiedShuffleSplit(n_splits=50, test_size=0.2, random_state=0)
     fold_accuracy_scores = np.zeros(0)
     fold_f1_macro_scores = np.zeros(0)
     fold_f1_weighted_scores = np.zeros(0)
@@ -214,7 +202,7 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
     i = 0
 
     for train_index, test_index in logo.split(X_subset, y_subset):
-        print i
+        print "Fold: ", i
         i+=1
         # Split train and test from folds
         X_train, X_test = get_array(train_index, X_subset), get_array(test_index, X_subset)
@@ -230,10 +218,12 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
             X_train = scaler.transform(X_train)
             X_test = scaler.transform(X_test)
 
-        # Init an optional balancing model
-        if balancing_option:
-            balancer = init_balancing_model(balancing_option)
-            X_train, y_train = balancer.fit_sample(X_train, y_train)
+        # Init feature selection model
+        if feature_selection_option != None:
+            feature_selector = init_feature_selection_model(feature_selection_option)
+            feature_selector.fit(X_subset, y_subset)
+            X_train = feature_selector.transform(X_train)
+            X_test = feature_selector.transform(X_test)
 
         # Init an optional reduce dimenstion model
         if reduce_dimension_option:
@@ -242,12 +232,17 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
             X_train = reducer.transform(X_train)
             X_test = reducer.transform(X_test)
 
+        # Init an optional balancing model
+        if balancing_option:
+            balancer = init_balancing_model(balancing_option)
+            X_train, y_train = balancer.fit_sample(X_train, y_train)
+
         # Fit prerocessed data to classifer model
         model.fit(X_train, y_train)
 
         # Predict
         y_pred_prob = model.predict_proba(X_test)
-        y_pred = predict_with_false_priority(y_pred_prob, false_priority=1.0)
+        y_pred = predict_with_false_priority(y_pred_prob, false_priority=1.2)
         # y_pred = model.predict(X_test)
 
         # Metrics
@@ -309,11 +304,18 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
         scaler.fit(X_train)
         X_train = scaler.transform(X_train)
 
-    # Init an optional balancing model
-    balancer = None
-    if balancing_option:
-        balancer = init_balancing_model(balancing_option)
-        X_train, y_train = balancer.fit_sample(X_train, y_train)
+    # Init aa feature selector
+    feature_selector = None
+    if feature_selection_option != None:
+        feature_selector = init_feature_selection_model(feature_selection_option)
+        feature_selector.fit(X_train, y_train)
+        X_train = feature_selector.transform(X_train)
+
+    # print sorted(feature_selector.variances_, reverse=True)
+    print feature_selector.get_params
+    print feature_selector.get_support(indices=True)
+    print len(feature_selector.get_support(indices=True))
+    print Counter([get_feature_name(index) for index in feature_selector.get_support(indices=True)]).items()
 
     # Init an optional reduce dimenstion model
     reducer = None
@@ -321,6 +323,13 @@ def train(X ,y, groups, algo_option, feature_option, balancing_option, scale_opt
         reducer = init_reduce_dimension_model(reduce_dimension_option)
         reducer.fit(X_train, y_train)
         X_train = reducer.transform(X_train)
+
+    # Init an optional balancing model
+    balancer = None
+    if balancing_option:
+        balancer = init_balancing_model(balancing_option)
+        X_train, y_train = balancer.fit_sample(X_train, y_train)
+
 
     # Fit prerocessed data to classifer model
     model.fit(X_train, y_train)

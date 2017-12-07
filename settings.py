@@ -77,9 +77,9 @@ TRAINING_SETTINGS = {
 
 
     'scale_option': {
-        'name': 'MaxAbs',
+        'name': 'Standard',
     },
-    'scale_option': None,
+    # 'scale_option': None,
 
 
     'reduce_dimension_algorithm': {
@@ -87,12 +87,11 @@ TRAINING_SETTINGS = {
         'n_components': 30,
         'random_state': 0
     },
-    'reduce_dimension_algorithm': None,
+    # 'reduce_dimension_algorithm': None,
 
 
     'feature_selection_algorithm' : {
         'name': 'k-best',
-        'score_func': chi2,
         'k': 50
         # 'threshold': 0.25,
         # 'prefit': True,
@@ -109,6 +108,6 @@ TRAINING_SETTINGS = {
         'n_estimators': 100,
         # 'bootstrap': True,
         # 'verbose': True
-        'learning_rate': 0.1
+        'learning_rate': 0.05
     }
 }
